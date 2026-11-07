@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function ScriptNotFound() {
   return (
@@ -9,7 +10,7 @@ export default function ScriptNotFound() {
       <p className="mb-6 text-muted-foreground">
         It may have been deleted, or the link is wrong.
       </p>
-      <Link href="/scripts" className={buttonVariants()}>
+      <Link href="/scripts" className={cn(buttonVariants())}>
         Back to scripts
       </Link>
     </main>

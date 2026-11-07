@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getScript } from "@/lib/scripts";
+import { cn } from "@/lib/utils";
 
 async function ScriptDetail({
   params,
@@ -32,7 +33,7 @@ async function ScriptDetail({
         <div className="flex gap-2">
           <Link
             href={`/scripts/${script.id}/edit`}
-            className={buttonVariants({ variant: "outline" })}
+            className={cn(buttonVariants({ variant: "outline" }))}
           >
             <Pencil data-icon="inline-start" />
             Edit

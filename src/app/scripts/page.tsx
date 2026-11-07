@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { listScripts } from "@/lib/scripts";
+import { cn } from "@/lib/utils";
 
 export const metadata = { title: "Scripts | AIPOD" };
 
@@ -83,7 +84,7 @@ export default function ScriptsPage() {
             Spoken scripts to revise from.
           </p>
         </div>
-        <Link href="/scripts/new" className={buttonVariants()}>
+        <Link href="/scripts/new" className={cn(buttonVariants())}>
           <Plus data-icon="inline-start" />
           New script
         </Link>
