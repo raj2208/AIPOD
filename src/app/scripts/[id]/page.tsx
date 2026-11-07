@@ -5,20 +5,12 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { DeleteScriptButton } from "@/components/delete-script-button";
-import { ScriptPlayer } from "@/components/script-player";
+import { ScriptReader } from "@/components/script-reader";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getScript } from "@/lib/scripts";
 import { cn } from "@/lib/utils";
-
-// Rough length of the spoken script, at about 150 words per minute.
-const WORDS_PER_MINUTE = 150;
-
-function estimateSpeechSeconds(text: string) {
-  const words = text.split(/\s+/).filter(Boolean).length;
-  return Math.round((words / WORDS_PER_MINUTE) * 60);
-}
 
 async function ScriptDetail({
   params,
@@ -29,9 +21,6 @@ async function ScriptDetail({
   const { id } = await params;
   const script = await getScript(id);
   if (!script) notFound();
-
-  const paragraphs = script.content.split(/\n{2,}/);
-  const estimatedSeconds = estimateSpeechSeconds(script.content);
 
   return (
     <>
@@ -52,13 +41,12 @@ async function ScriptDetail({
         </div>
       </div>
 
-      <article className="space-y-4 text-lg leading-relaxed">
-        {paragraphs.map((paragraph, index) => (
-          <p key={index}>{paragraph}</p>
-        ))}
-      </article>
-
-      <ScriptPlayer totalSeconds={estimatedSeconds} />
+      <ScriptReader
+        scriptId={script.id}
+        title={script.title}
+        topic={script.topic}
+        content={script.content}
+      />
     </>
   );
 }

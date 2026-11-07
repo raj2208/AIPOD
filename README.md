@@ -20,3 +20,5 @@ pnpm dev
 ```
 
 Then open http://localhost:3000.
+
+Run the tests with `pnpm test`.

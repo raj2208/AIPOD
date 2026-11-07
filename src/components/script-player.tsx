@@ -1,9 +1,21 @@
 "use client";
 
-import { Headphones, Pause, Play, RotateCcw, RotateCw } from "lucide-react";
+import {
+  Headphones,
+  Pause,
+  Play,
+  RotateCcw,
+  RotateCw,
+  SlidersHorizontal,
+} from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -12,26 +24,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  SPEED_PRESETS,
+  type HighlightMode,
+} from "@/lib/tts/settings";
+import { SKIP_SECONDS, type SpeechPlayer } from "@/lib/tts/use-speech-player";
 
-const SPEEDS = [
-  { value: "0.75", label: "0.75x" },
-  { value: "1", label: "1x" },
-  { value: "1.25", label: "1.25x" },
-  { value: "1.5", label: "1.5x" },
-  { value: "1.75", label: "1.75x" },
-  { value: "2", label: "2x" },
-  { value: "2.5", label: "2.5x" },
-  { value: "3", label: "3x" },
+const DEFAULT_VOICE = "__default__";
+
+const HIGHLIGHT_OPTIONS: { value: HighlightMode; label: string }[] = [
+  { value: "off", label: "Off" },
+  { value: "sentence", label: "Sentence" },
+  { value: "word", label: "Word" },
 ];
-
-const VOICES = [{ value: "default", label: "System default" }];
-
-const SKIP_SECONDS = 15;
 
 function formatTime(totalSeconds: number) {
   const seconds = Math.max(0, Math.round(totalSeconds));
@@ -42,10 +53,12 @@ function formatTime(totalSeconds: number) {
 function IconButton({
   label,
   onClick,
+  disabled,
   children,
 }: {
   label: string;
   onClick: () => void;
+  disabled?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -57,6 +70,7 @@ function IconButton({
             size="icon-lg"
             aria-label={label}
             onClick={onClick}
+            disabled={disabled}
           />
         }
       >
@@ -67,20 +81,113 @@ function IconButton({
   );
 }
 
-/**
- * The listening controls for a script.
- *
- * This is the interface only. It keeps its own state so the buttons respond,
- * but nothing is spoken yet. Text-to-speech will be connected later.
- */
-export function ScriptPlayer({ totalSeconds }: { totalSeconds: number }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
-  const [speed, setSpeed] = useState("1");
-  const [voice, setVoice] = useState("default");
+function SettingSwitch({
+  label,
+  hint,
+  checked,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <div className="text-sm">
+        <div className="font-medium">{label}</div>
+        <div className="text-xs text-muted-foreground">{hint}</div>
+      </div>
+      <Switch
+        aria-label={label}
+        checked={checked}
+        onCheckedChange={onChange}
+      />
+    </div>
+  );
+}
 
-  const skip = (seconds: number) =>
-    setElapsed((current) => Math.min(totalSeconds, Math.max(0, current + seconds)));
+function SettingsPanel({ player }: { player: SpeechPlayer }) {
+  const { settings, updateSettings } = player;
+
+  return (
+    <div className="space-y-5">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-medium">Pitch</span>
+          <span className="text-muted-foreground tabular-nums">
+            {settings.pitch.toFixed(1)}
+          </span>
+        </div>
+        <Slider
+          aria-label="Pitch"
+          min={0.5}
+          max={2}
+          step={0.1}
+          defaultValue={[settings.pitch]}
+          onValueCommitted={(value) =>
+            updateSettings({ pitch: Array.isArray(value) ? value[0] : value })
+          }
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-sm font-medium">Highlight</div>
+        <div className="grid grid-cols-3 gap-1">
+          {HIGHLIGHT_OPTIONS.map((option) => (
+            <Button
+              key={option.value}
+              size="sm"
+              variant={settings.highlight === option.value ? "default" : "outline"}
+              aria-pressed={settings.highlight === option.value}
+              onClick={() => updateSettings({ highlight: option.value })}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <SettingSwitch
+        label="Auto-scroll"
+        hint="Follow the sentence being read."
+        checked={settings.autoScroll}
+        onChange={(autoScroll) => updateSettings({ autoScroll })}
+      />
+      <SettingSwitch
+        label="Keep screen on"
+        hint="Stops the phone sleeping. Uses more battery."
+        checked={settings.keepScreenOn}
+        onChange={(keepScreenOn) => updateSettings({ keepScreenOn })}
+      />
+      <SettingSwitch
+        label="Background audio"
+        hint="Experimental. Helps playback continue with the screen off."
+        checked={settings.backgroundAudio}
+        onChange={(backgroundAudio) => updateSettings({ backgroundAudio })}
+      />
+    </div>
+  );
+}
+
+/** The listening controls. All the work is done by the speech player. */
+export function ScriptPlayer({ player }: { player: SpeechPlayer }) {
+  const { supported, settings, updateSettings, voices } = player;
+  const [scrub, setScrub] = useState<number | null>(null);
+
+  const voiceItems = [
+    { value: DEFAULT_VOICE, label: "System default" },
+    ...voices.map((voice) => ({
+      value: voice.name,
+      label: `${voice.name} (${voice.lang})`,
+    })),
+  ];
+  const speedItems = SPEED_PRESETS.map((speed) => ({
+    value: String(speed),
+    label: `${speed}x`,
+  }));
+
+  const shownSeconds = scrub ?? player.elapsedSeconds;
 
   return (
     <section
@@ -92,21 +199,33 @@ export function ScriptPlayer({ totalSeconds }: { totalSeconds: number }) {
         Listen
       </div>
 
+      {!supported && (
+        <p className="mb-3 text-sm text-destructive">
+          This browser can&apos;t read text aloud. Try Chrome on Android or
+          desktop.
+        </p>
+      )}
+
       <div className="flex items-center gap-3">
         <span className="w-10 text-xs text-muted-foreground tabular-nums">
-          {formatTime(elapsed)}
+          {formatTime(shownSeconds)}
         </span>
         <Slider
           aria-label="Playback position"
+          disabled={!supported}
           min={0}
-          max={totalSeconds}
-          value={[elapsed]}
+          max={Math.max(1, Math.round(player.totalSeconds))}
+          value={[Math.round(shownSeconds)]}
           onValueChange={(value) =>
-            setElapsed(Array.isArray(value) ? value[0] : value)
+            setScrub(Array.isArray(value) ? value[0] : value)
           }
+          onValueCommitted={(value) => {
+            player.seekToSeconds(Array.isArray(value) ? value[0] : value);
+            setScrub(null);
+          }}
         />
         <span className="w-10 text-right text-xs text-muted-foreground tabular-nums">
-          {formatTime(totalSeconds)}
+          {formatTime(player.totalSeconds)}
         </span>
       </div>
 
@@ -114,7 +233,8 @@ export function ScriptPlayer({ totalSeconds }: { totalSeconds: number }) {
         <div className="flex items-center gap-1">
           <IconButton
             label={`Back ${SKIP_SECONDS} seconds`}
-            onClick={() => skip(-SKIP_SECONDS)}
+            disabled={!supported}
+            onClick={() => player.skip(-SKIP_SECONDS)}
           >
             <RotateCcw />
           </IconButton>
@@ -122,10 +242,11 @@ export function ScriptPlayer({ totalSeconds }: { totalSeconds: number }) {
           <Button
             size="icon-lg"
             className="size-11 rounded-full"
-            aria-label={isPlaying ? "Pause" : "Play"}
-            onClick={() => setIsPlaying((playing) => !playing)}
+            aria-label={player.playing ? "Pause" : "Play"}
+            disabled={!supported}
+            onClick={player.toggle}
           >
-            {isPlaying ? (
+            {player.playing ? (
               <Pause className="size-5" />
             ) : (
               <Play className="size-5" />
@@ -134,7 +255,8 @@ export function ScriptPlayer({ totalSeconds }: { totalSeconds: number }) {
 
           <IconButton
             label={`Forward ${SKIP_SECONDS} seconds`}
-            onClick={() => skip(SKIP_SECONDS)}
+            disabled={!supported}
+            onClick={() => player.skip(SKIP_SECONDS)}
           >
             <RotateCw />
           </IconButton>
@@ -142,15 +264,18 @@ export function ScriptPlayer({ totalSeconds }: { totalSeconds: number }) {
 
         <div className="flex items-center gap-2">
           <Select
-            items={VOICES}
-            value={voice}
-            onValueChange={(value) => value && setVoice(value)}
+            items={voiceItems}
+            value={settings.voiceName || DEFAULT_VOICE}
+            onValueChange={(value) =>
+              value &&
+              updateSettings({ voiceName: value === DEFAULT_VOICE ? "" : value })
+            }
           >
-            <SelectTrigger aria-label="Voice" size="sm">
+            <SelectTrigger aria-label="Voice" size="sm" className="max-w-36">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {VOICES.map((item) => (
+              {voiceItems.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>
@@ -159,27 +284,48 @@ export function ScriptPlayer({ totalSeconds }: { totalSeconds: number }) {
           </Select>
 
           <Select
-            items={SPEEDS}
-            value={speed}
-            onValueChange={(value) => value && setSpeed(value)}
+            items={speedItems}
+            value={String(settings.rate)}
+            onValueChange={(value) =>
+              value && updateSettings({ rate: Number(value) })
+            }
           >
             <SelectTrigger aria-label="Speed" size="sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {SPEEDS.map((item) => (
+              {speedItems.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+
+          <Popover>
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  aria-label="Player settings"
+                />
+              }
+            >
+              <SlidersHorizontal />
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-72">
+              <SettingsPanel player={player} />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
-      <p className="mt-3 text-xs text-muted-foreground">
-        Preview only. Playback is not connected yet.
-      </p>
+      {player.error && (
+        <p role="alert" className="mt-3 text-sm text-destructive">
+          Speech stopped: {player.error}. Press play to try again.
+        </p>
+      )}
     </section>
   );
 }
