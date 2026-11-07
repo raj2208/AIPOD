@@ -6,6 +6,12 @@ People spend a lot of dead time listening to music or podcasts on earphones, for
 
 **Example user: Raj.** Raj works 9-5 and commutes about 2 hours a day. He is preparing for interviews. He wants to use that commute to revise what he has already learned.
 
+## Who it is for
+
+**Raj only, for now.** The first version is a personal tool built for one user. If it works well for Raj, it can become a product for others later. Multi-user concerns such as accounts, billing, and scale are out of scope until then.
+
+**Android only.** Raj uses an Android phone. iPhone is not considered for now.
+
 ## Product
 
 AIPOD turns a person's own study notes into spoken audio they can revise from, using earphones alone.
@@ -16,6 +22,17 @@ AIPOD turns a person's own study notes into spoken audio they can revise from, u
 4. The script is converted to speech, and the user listens.
 
 The goal is **revision through audio**, not first-time learning.
+
+## Product type
+
+The user plays the revision audio on an Android phone, mostly with earphones and the phone in a pocket. Building a native mobile app first would be expensive, so two lighter options are being weighed:
+
+1. **Web reader (leading option).** A web app that reads the scripts aloud using the browser's built-in text-to-speech, with controls for voice, speed, and highlighting, similar to the listen feature on web novel reading sites. Details are in [player.md](player.md).
+2. **Pre-generated audio and a podcast feed (fallback).** Audio is generated ahead of time and played in an existing podcast app, such as AntennaPod. This works with the screen locked.
+
+Not chosen: a desktop app (Raj is commuting, not at a computer) and a browser extension (there is no browser during the commute).
+
+The choice depends on one test: does browser text-to-speech keep playing on Raj's Android phone with the screen locked? See [open-questions.md](open-questions.md).
 
 ## Why AI is needed
 

@@ -1,6 +1,6 @@
 # Pipeline
 
-How a markdown note becomes audio.
+How a markdown note becomes audio Raj can listen to.
 
 ## Overview
 
@@ -14,13 +14,14 @@ GitHub repo (markdown notes)
   2. AI transform: notes -> spoken script
         |
         v
-  3. Fidelity check (and optional review)
+  3. Freeze the script (same input, same output)
         |
         v
-  4. Text-to-speech
+  4. Fidelity check (and optional review)
         |
         v
-  5. Audio the user can download and play
+  5. Playback: browser text-to-speech (web reader),
+     or pre-generated audio (fallback)
 ```
 
 ## 1. Read notes
@@ -43,7 +44,7 @@ Rule: no facts are added, removed, or reordered.
 AI output varies between runs and between models. To get the same audio every time:
 
 - **Generate once, then freeze.** Each script is stored, keyed by a hash of the source note plus the model and prompt version.
-- **Regenerate only on change.** A new script is produced only when the source note changes, and the difference is visible in git.
+- **Regenerate only on change.** A new script is produced only when the source note changes.
 - **Pin the model and prompt.** Upgrading either is an explicit regeneration step, never a silent one.
 
 ## 4. Fidelity check
@@ -53,6 +54,12 @@ The main risk is the AI drifting from the facts while making things sound smooth
 - Extract key terms, numbers, and names from the source note and confirm each appears in the script. Flag anything missing or newly introduced.
 - Optional human review: the user reads a script before it is voiced.
 
-## 5. Text-to-speech and delivery
+## 5. Playback
 
-A text-to-speech provider voices the script. Episodes should be available for offline listening, since commutes may have poor signal, so they are generated ahead of time rather than on demand.
+There are two ways to turn the frozen script into sound. Which one is used depends on a screen-lock test (see [open-questions.md](open-questions.md)).
+
+**Web reader (leading option).** The script is read aloud on the phone by the browser's built-in text-to-speech. Nothing is generated ahead of time except the script. See [player.md](player.md).
+
+**Pre-generated audio (fallback).** A text-to-speech provider voices the script ahead of time, and the audio is published to a private podcast feed so Raj can download episodes and play them offline in a podcast app. This costs money per episode but keeps playing when the screen is locked.
+
+In both cases the AI-written script is the same, so the transform and fidelity check are built first.
