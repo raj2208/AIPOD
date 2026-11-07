@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated shadcn/ui code. Re-added by `shadcn add`, so not linted.
+    "src/components/ui/**",
+    "src/hooks/use-mobile.ts",
   ]),
 ]);
 
