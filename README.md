@@ -8,8 +8,14 @@ See [docs/vision.md](docs/vision.md) for the idea and [docs/pipeline.md](docs/pi
 
 ## Development
 
+You need Node.js, pnpm, and a running Postgres.
+
 ```bash
 pnpm install
+createdb aipod
+cp .env.example .env.local   # then set DATABASE_URL
+pnpm db:migrate              # create the tables
+pnpm db:seed                 # add the sample Terraform script
 pnpm dev
 ```
 

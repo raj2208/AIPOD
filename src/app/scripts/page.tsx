@@ -76,7 +76,7 @@ async function ScriptsTable() {
 
 export default function ScriptsPage() {
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-10">
+    <main className="mx-auto w-full max-w-5xl px-4 py-10">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Scripts</h1>
