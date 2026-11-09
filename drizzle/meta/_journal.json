@@ -15,6 +15,13 @@
       "when": 1794221282938,
       "tag": "0001_smiling_black_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794221795970,
+      "tag": "0002_wide_lady_deathstrike",
+      "breakpoints": true
     }
   ]
 }

@@ -1,5 +1,6 @@
 import { index, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
+import type { FidelityReport } from "@/lib/fidelity";
 import type { SyncReport } from "@/lib/notes/types";
 
 export type ScriptStatus = "draft" | "approved";
@@ -32,6 +33,12 @@ export const scripts = pgTable(
 
     model: text("model"),
     skillVersion: text("skill_version"),
+
+    /**
+     * How well the script kept the note's facts. Null when it has not been
+     * checked, which includes when the note has changed since.
+     */
+    fidelity: jsonb("fidelity").$type<FidelityReport>(),
 
     /** Set when the file disappears from the repo. Rows are never deleted. */
     removedAt: timestamp("removed_at", { withTimezone: true }),

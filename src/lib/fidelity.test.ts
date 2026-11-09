@@ -81,6 +81,11 @@ describe("checkFidelity: numbers", () => {
     ]);
   });
 
+  it("does not list a number twice when it is inside a missing term", () => {
+    const report = checkFidelity("Back up every **6 hours**.", "Back up often.");
+    expect(report.missing).toEqual(["6 hours"]);
+  });
+
   it("flags a number the note never had", () => {
     const report = checkFidelity("It takes steps.", "It takes 7 steps.");
     expect(report.added).toEqual(["7"]);

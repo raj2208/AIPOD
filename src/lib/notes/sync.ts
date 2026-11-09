@@ -2,6 +2,7 @@ import { inArray, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 import * as schema from "../../db/schema";
+import { checkFidelity, type FidelityReport } from "../fidelity";
 import { scripts, syncState } from "../../db/schema";
 import {
   claimIds,
@@ -64,7 +65,9 @@ export async function runSync(
       scriptPath: scripts.scriptPath,
       scriptHash: scripts.scriptHash,
       notePath: scripts.notePath,
+      sourceHash: scripts.sourceHash,
       noteHash: scripts.noteHash,
+      hasFidelity: sql<boolean>`${scripts.fidelity} is not null`,
       removedAt: scripts.removedAt,
     })
     .from(scripts);
@@ -105,6 +108,56 @@ export async function runSync(
     .filter((id) => knownIds.has(id));
   const removed = findRemoved(files, stored, acceptedIds);
 
+  // The fidelity check compares a script with the exact note it was written
+  // from. A note is downloaded only when a script is new or changed, or when
+  // its note matches again, and never twice in one run.
+  const noteReads = new Map<string, Promise<string>>();
+  const readNote = (path: string, sha: string) => {
+    const key = `${path}@${sha}`;
+    if (!noteReads.has(key)) noteReads.set(key, source.read({ path, sha }));
+    return noteReads.get(key)!;
+  };
+  const check = async (
+    path: string,
+    noteHash: string,
+    content: string,
+  ): Promise<FidelityReport | null> => {
+    try {
+      return checkFidelity(await readNote(path, noteHash), content);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      errors.push({ path, message: `Could not check against the note: ${reason}` });
+      return null;
+    }
+  };
+
+  const fidelityById = new Map<string, FidelityReport | null>();
+  await mapLimit(claimed.accepted, FETCH_CONCURRENCY, async ({ script }) => {
+    const noteHash = hashByPath.get(script.source) ?? null;
+    const fresh = noteHash !== null && noteHash === script.source_hash;
+    fidelityById.set(
+      script.id,
+      fresh ? await check(script.source, noteHash, script.content) : null,
+    );
+  });
+
+  const pendingContent =
+    plan.fidelityToCompute.length > 0
+      ? await db
+          .select({ id: scripts.id, content: scripts.content })
+          .from(scripts)
+          .where(inArray(scripts.id, plan.fidelityToCompute.map((x) => x.row.id)))
+      : [];
+  const contentById = new Map(pendingContent.map((row) => [row.id, row.content]));
+  const fidelityUpdates: { id: string; fidelity: FidelityReport | null }[] =
+    plan.fidelityToClear.map((id) => ({ id, fidelity: null }));
+  await mapLimit(plan.fidelityToCompute, FETCH_CONCURRENCY, async ({ row, noteHash }) => {
+    const content = contentById.get(row.id);
+    if (content === undefined) return;
+    const fidelity = await check(row.notePath, noteHash, content);
+    if (fidelity) fidelityUpdates.push({ id: row.id, fidelity });
+  });
+
   const report: SyncReport = {
     added,
     updated,
@@ -131,6 +184,7 @@ export async function runSync(
             noteHash: hashByPath.get(script.source) ?? null,
             model: script.model ?? null,
             skillVersion: script.skill_version ?? null,
+            fidelity: fidelityById.get(script.id) ?? null,
             updatedAt: now,
           })),
         )
@@ -148,6 +202,7 @@ export async function runSync(
             noteHash: sql`excluded.note_hash`,
             model: sql`excluded.model`,
             skillVersion: sql`excluded.skill_version`,
+            fidelity: sql`excluded.fidelity`,
             removedAt: null,
             updatedAt: now,
           },
@@ -167,6 +222,10 @@ export async function runSync(
         .update(scripts)
         .set({ noteHash })
         .where(sql`${scripts.id} = ${id}`);
+    }
+
+    for (const { id, fidelity } of fidelityUpdates) {
+      await tx.update(scripts).set({ fidelity }).where(sql`${scripts.id} = ${id}`);
     }
 
     if (removed.length > 0) {

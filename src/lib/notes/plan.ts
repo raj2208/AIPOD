@@ -8,7 +8,12 @@ export type StoredScript = {
   scriptPath: string;
   scriptHash: string;
   notePath: string;
+  /** The note's hash when the script was written. */
+  sourceHash: string;
+  /** The note's hash as of the last sync. */
   noteHash: string | null;
+  /** Whether a fidelity report is stored for this script. */
+  hasFidelity: boolean;
   removedAt: Date | null;
 };
 
@@ -19,6 +24,14 @@ export type SyncPlan = {
   unchanged: StoredScript[];
   /** Up-to-date scripts whose note has changed since we last looked. */
   noteHashUpdates: { id: string; noteHash: string | null }[];
+  /**
+   * Up-to-date scripts whose note matches what they were written from but
+   * that have no fidelity report yet. The note's current hash is included so
+   * it can be downloaded.
+   */
+  fidelityToCompute: { row: StoredScript; noteHash: string }[];
+  /** Up-to-date scripts whose note changed, so an old report no longer applies. */
+  fidelityToClear: string[];
 };
 
 export function indexByPath(files: RepoFile[]): Map<string, string> {
@@ -50,7 +63,16 @@ export function planSync(files: RepoFile[], stored: StoredScript[]): SyncPlan {
     return noteHash === row.noteHash ? [] : [{ id: row.id, noteHash }];
   });
 
-  return { toFetch, unchanged, noteHashUpdates };
+  const fidelityToCompute: SyncPlan["fidelityToCompute"] = [];
+  const fidelityToClear: string[] = [];
+  for (const row of unchanged) {
+    const noteHash = hashByPath.get(row.notePath) ?? null;
+    const fresh = noteHash !== null && noteHash === row.sourceHash;
+    if (fresh && !row.hasFidelity) fidelityToCompute.push({ row, noteHash });
+    if (!fresh && row.hasFidelity) fidelityToClear.push(row.id);
+  }
+
+  return { toFetch, unchanged, noteHashUpdates, fidelityToCompute, fidelityToClear };
 }
 
 export type ParsedFile = { file: RepoFile; script: ParsedScript };

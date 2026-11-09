@@ -129,12 +129,15 @@ export function checkFidelity(note: string, script: string): FidelityReport {
     if (words.length > 0 && !found) missing.push(term);
   }
 
-  // A number may be said as digits or as a word ("2" or "two").
+  // A number may be said as digits or as a word ("2" or "two"). One already
+  // inside a missing term, like "6" in "6 hours", is not listed twice.
+  const missingTokens = new Set(
+    missing.flatMap((term) => normalize(term, "plain").split(" ")),
+  );
   for (const number of terms.numbers) {
     const word = NUMBER_WORDS[number];
-    if (!scriptNumbers.has(number) && !(word && scriptTokens.has(word))) {
-      missing.push(number);
-    }
+    const said = scriptNumbers.has(number) || (word && scriptTokens.has(word));
+    if (!said && !missingTokens.has(number)) missing.push(number);
   }
 
   const noteNumbers = new Set(terms.numbers);

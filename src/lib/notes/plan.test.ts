@@ -18,7 +18,9 @@ function stored(overrides: Partial<StoredScript> = {}): StoredScript {
     scriptPath: "scripts/a.script.md",
     scriptHash: "h1",
     notePath: "notes/a.md",
+    sourceHash: "n1",
     noteHash: "n1",
+    hasFidelity: true,
     removedAt: null,
     ...overrides,
   };
@@ -99,6 +101,48 @@ describe("planSync", () => {
       [stored()],
     );
     expect(plan.noteHashUpdates).toHaveLength(0);
+  });
+});
+
+describe("planSync: fidelity", () => {
+  const files = (noteSha: string) => [
+    file("scripts/a.script.md", "h1"),
+    file("notes/a.md", noteSha),
+  ];
+
+  it("does nothing when the report is already there and the note matches", () => {
+    const plan = planSync(files("n1"), [stored()]);
+    expect(plan.fidelityToCompute).toEqual([]);
+    expect(plan.fidelityToClear).toEqual([]);
+  });
+
+  it("computes a missing report when the note matches the script", () => {
+    const row = stored({ hasFidelity: false });
+    const plan = planSync(files("n1"), [row]);
+    expect(plan.fidelityToCompute).toEqual([{ row, noteHash: "n1" }]);
+  });
+
+  it("clears the report when the note has changed", () => {
+    const plan = planSync(files("n2"), [stored()]);
+    expect(plan.fidelityToClear).toEqual(["a"]);
+    expect(plan.fidelityToCompute).toEqual([]);
+  });
+
+  it("does not compute against a note that no longer matches", () => {
+    const plan = planSync(files("n2"), [stored({ hasFidelity: false })]);
+    expect(plan.fidelityToCompute).toEqual([]);
+    expect(plan.fidelityToClear).toEqual([]);
+  });
+
+  it("clears the report when the note is deleted", () => {
+    const plan = planSync([file("scripts/a.script.md", "h1")], [stored()]);
+    expect(plan.fidelityToClear).toEqual(["a"]);
+  });
+
+  it("computes again once a changed note is reverted", () => {
+    const row = stored({ hasFidelity: false, noteHash: "n2" });
+    const plan = planSync(files("n1"), [row]);
+    expect(plan.fidelityToCompute).toEqual([{ row, noteHash: "n1" }]);
   });
 });
 
