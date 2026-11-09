@@ -19,17 +19,17 @@ The score is a weighted average of the areas below. Each area is scored out of 1
 
 ## Scores
 
-| Area | Weight | v0 |
-| --- | --- | --- |
-| Playlist on a phone | 20% | 3 |
-| Player and reading | 25% | 4 |
-| Look and feel | 15% | 4 |
-| Navigation and hierarchy | 10% | 5 |
-| Dark mode | 10% | 2 |
-| Touch and accessibility | 10% | 5 |
-| States and feedback | 5% | 6 |
-| Desktop | 5% | 6 |
-| **Overall** | | **4.0** |
+| Area | Weight | v0 | v1 |
+| --- | --- | --- | --- |
+| Playlist on a phone | 20% | 3 | 8 |
+| Player and reading | 25% | 4 | 4 |
+| Look and feel | 15% | 4 | 4 |
+| Navigation and hierarchy | 10% | 5 | 5 |
+| Dark mode | 10% | 2 | 2 |
+| Touch and accessibility | 10% | 5 | 5 |
+| States and feedback | 5% | 6 | 6 |
+| Desktop | 5% | 6 | 6 |
+| **Overall** | | **4.0** | **5.0** |
 
 ## v0: problems found
 
@@ -43,3 +43,7 @@ The score is a weighted average of the areas below. Each area is scored out of 1
 ## Plan
 
 Biggest weighted gap first: the playlist, then the player, then dark mode, then the look, then hierarchy, then touch and accessibility, then navigation and desktop. After each change the screenshots are retaken and the table above is updated.
+
+## Changes by version
+
+- **v1, playlist.** The table became a list of tappable rows: title, then topic, length and any status in small coloured pills. The whole row is the link and nothing is clipped. "Continue listening" is a dark card with a progress bar and time left. Syncing moved to a quiet line under the list. The page is a single readable column on desktop too. Still to do in this area: the page is called "Playlist" but the nav still says "Scripts".

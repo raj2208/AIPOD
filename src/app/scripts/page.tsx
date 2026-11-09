@@ -1,124 +1,106 @@
-import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { ContinueListening } from "@/components/continue-listening";
-import { ScriptBadges } from "@/components/script-badges";
-import { SyncPanel } from "@/components/sync-panel";
+import { ScriptRow } from "@/components/script-row";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { SyncErrors, SyncStatus } from "@/components/sync-panel";
 import type { Script } from "@/db/schema";
 import { formatDuration } from "@/lib/duration";
 import { getSyncState, listScripts } from "@/lib/scripts";
-import { estimateSeconds } from "@/lib/tts/chunks";
+import { buildChunks, estimateSeconds } from "@/lib/tts/chunks";
 
-export const metadata = { title: "Scripts | AIPOD" };
+export const metadata = { title: "Playlist | AIPOD" };
 
-function ScriptsSkeleton() {
+function PlaylistSkeleton() {
   return (
-    <div className="space-y-3">
-      <Skeleton className="h-9 w-full" />
-      <Skeleton className="h-9 w-full" />
-      <Skeleton className="h-9 w-full" />
+    <div className="divide-y rounded-2xl border">
+      {[0, 1, 2, 3].map((row) => (
+        <div key={row} className="flex items-center gap-4 px-4 py-4">
+          <Skeleton className="h-4 w-5" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-5 w-2/3" />
+            <Skeleton className="h-3.5 w-1/3" />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
-function ScriptsTable({ scripts }: { scripts: Script[] }) {
-  const lengths = scripts.map((script) => estimateSeconds(script.content));
-  const totalSeconds = lengths.reduce((sum, seconds) => sum + seconds, 0);
-
+function EmptyPlaylist() {
   return (
-    <>
-      <p className="mb-3 text-sm text-muted-foreground">
-        {scripts.length} {scripts.length === 1 ? "script" : "scripts"}, about{" "}
-        {formatDuration(totalSeconds)} at normal speed, played in this order.
-      </p>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-10">#</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Topic</TableHead>
-            <TableHead className="text-right">Length</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {scripts.map((script, position) => (
-            <TableRow key={script.id}>
-              <TableCell className="text-muted-foreground">
-                {position + 1}
-              </TableCell>
-              <TableCell>
-                <Link
-                  href={`/scripts/${script.id}`}
-                  className="font-medium hover:underline"
-                >
-                  {script.title}
-                </Link>
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <Badge variant="secondary">{script.topic}</Badge>
-                  <ScriptBadges script={script} />
-                </div>
-              </TableCell>
-              <TableCell className="text-right text-muted-foreground">
-                {formatDuration(lengths[position])}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </>
+    <p className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">
+      Nothing to play yet. Add a script to your notes repo, then run{" "}
+      <code className="rounded bg-muted px-1 py-0.5">pnpm sync</code>.
+    </p>
   );
 }
 
-async function ScriptsContent() {
+function Playlist({ scripts }: { scripts: Script[] }) {
+  const lengths = scripts.map((script) => estimateSeconds(script.content));
+
+  return (
+    <ol className="divide-y overflow-hidden rounded-2xl border bg-card">
+      {scripts.map((script, index) => (
+        <ScriptRow
+          key={script.id}
+          script={script}
+          position={index + 1}
+          seconds={lengths[index]}
+        />
+      ))}
+    </ol>
+  );
+}
+
+async function PlaylistContent() {
   await connection();
   const [scripts, syncState] = await Promise.all([
     listScripts(),
     getSyncState(),
   ]);
 
+  const total = scripts.reduce(
+    (sum, script) => sum + estimateSeconds(script.content),
+    0,
+  );
+
   return (
     <>
-      <ContinueListening
-        scripts={scripts.map(({ id, title }) => ({ id, title }))}
-      />
-      <SyncPanel state={syncState} />
-      {scripts.length === 0 ? (
-        <p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
-          No scripts yet. Add a script to your notes repo, then run{" "}
-          <code className="rounded bg-muted px-1 py-0.5">pnpm sync</code>.
+      <header className="mb-6">
+        <h1 className="text-3xl font-semibold tracking-tight">Playlist</h1>
+        <p className="mt-1 text-muted-foreground">
+          {scripts.length === 0
+            ? "Your revision scripts will appear here."
+            : `${scripts.length} ${scripts.length === 1 ? "script" : "scripts"} · about ${formatDuration(total)} in all`}
         </p>
+      </header>
+
+      <ContinueListening
+        scripts={scripts.map((script) => ({
+          id: script.id,
+          title: script.title,
+          chunks: buildChunks(script.content).length,
+          seconds: estimateSeconds(script.content),
+        }))}
+      />
+      <SyncErrors state={syncState} />
+      {scripts.length === 0 ? (
+        <EmptyPlaylist />
       ) : (
-        <ScriptsTable scripts={scripts} />
+        <Playlist scripts={scripts} />
       )}
+      <SyncStatus state={syncState} />
     </>
   );
 }
 
 export default function ScriptsPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-10">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Scripts</h1>
-        <p className="text-sm text-muted-foreground">
-          Spoken scripts, loaded from your notes repo.
-        </p>
-      </div>
-
-      <Suspense fallback={<ScriptsSkeleton />}>
-        <ScriptsContent />
+    <main className="mx-auto w-full max-w-2xl px-4 pt-8 pb-16 sm:pt-12">
+      <Suspense fallback={<PlaylistSkeleton />}>
+        <PlaylistContent />
       </Suspense>
     </main>
   );
