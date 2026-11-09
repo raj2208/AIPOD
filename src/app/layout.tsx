@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { SiteFooter } from "@/components/site-footer";
@@ -21,6 +21,12 @@ export const metadata: Metadata = {
   title: "AIPOD",
   description:
     "Turn your own study notes into spoken scripts you can revise from on your commute.",
+  icons: { icon: "/icon.svg" },
+};
+
+// Colours the browser bar, and the app's window when it is installed.
+export const viewport: Viewport = {
+  themeColor: "#171717",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

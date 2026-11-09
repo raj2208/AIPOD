@@ -53,6 +53,7 @@ What is built:
 - **Auto-scroll.** The page follows the sentence being read.
 - **Phone integration.** Lock-screen controls (Media Session), an optional screen wake lock, and an optional silent audio loop (see below).
 - **Recovery.** A timer restarts speech that stopped on its own.
+- **Installable.** Chrome on Android can install AIPOD to the home screen, where it opens full screen with its own icon and starts on the scripts list. Chrome reports no installability errors for it. Installing needs the deployed site to be served over HTTPS.
 - **Play order and auto-advance.** Scripts play in the order set by `playlist.yml` in the notes repo, then by topic and title. When one ends, the next opens and starts by itself, so a whole commute plays without touching the phone. This can be switched off in the player settings. The lock-screen "next" button opens the next script. Previous and next scripts are also shown under the text. The list shows each script's position and length, and the total.
 
 Design choices:
@@ -67,7 +68,7 @@ Auto-advance opens the next script as a new page inside the same browser tab, an
 Wake lock and media controls only work on a secure page, so the phone cannot simply open a plain `http://` address on the laptop.
 
 1. Deploy the app, or forward the port from the laptop with Chrome's remote debugging (`chrome://inspect`, then port forwarding for 3000).
-2. Open a script in Chrome on the phone and press play.
+2. Open a script in Chrome on the phone and press play. Try it both in a browser tab and as the installed app (Chrome menu, then Install app), since Android may treat them differently.
 3. Lock the screen and listen for 20 minutes or more.
 4. Try it with "Background audio" on and then off, and note which keeps playing.
 5. Use a playlist of two short scripts, and check that the second starts by itself after the first ends with the screen locked.
