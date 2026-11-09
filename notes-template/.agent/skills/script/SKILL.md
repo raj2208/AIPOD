@@ -49,7 +49,7 @@ Not allowed, because it changes the content:
 - Plain spoken sentences. Short enough to say in one breath.
 - No markdown in the body: no `#`, `-`, `*`, backticks, tables, or links.
 - Separate paragraphs with a blank line. Each paragraph should be one idea, because the player moves paragraph by paragraph.
-- Write numbers and units the way they are said aloud.
+- Keep numbers as digits ("2 hours", not "two hours"). The voice reads digits correctly, and AIPOD's fact check relies on them to spot a number that was dropped or added.
 - Keep terms the user would be asked about exactly as the note spells them, so they are recognised on the day.
 
 ## File format

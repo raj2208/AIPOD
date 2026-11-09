@@ -53,8 +53,9 @@ AI output varies between runs and between models. To get the same audio every ti
 
 The main risk is the AI drifting from the facts while making things sound smooth. Planned guardrails:
 
-- Extract key terms, numbers, and names from the source note and confirm each appears in the script. Flag anything missing or newly introduced.
-- Optional human review: the user reads a script before it is voiced.
+- **Automatic check (built).** When a script is loaded, AIPOD compares it with the exact note it was written from, without calling an AI model. It looks for code terms, bold terms, and numbers in the note that the script never says; numbers in the script that the note never had (the usual sign of an invented fact); and a script much shorter than its note. It is a guide, not a proof: reworded points can be flagged, and a changed fact that uses the same words is not caught. Results show on the script's page and as a "Check facts" flag in the list.
+- **Stale scripts.** If the note changes after the script was written, the script is flagged "Note changed" and no check is shown, since it no longer applies.
+- **Human review (built).** Every script starts as a draft. The user reads it and changes `status: draft` to `status: approved` in the file.
 
 ## 5. Playback
 
