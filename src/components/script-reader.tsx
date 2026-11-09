@@ -1,18 +1,27 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useRef } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Fragment, useCallback, useEffect, useMemo, useRef } from "react";
 
 import { ScriptPlayer } from "@/components/script-player";
+import { requestAutoplay } from "@/lib/tts/autoplay";
 import { buildChunks, splitParagraphs } from "@/lib/tts/chunks";
 import type { HighlightMode } from "@/lib/tts/settings";
 import { useSpeechPlayer } from "@/lib/tts/use-speech-player";
 import { cn } from "@/lib/utils";
+
+type Neighbour = { id: string; title: string };
 
 type ScriptReaderProps = {
   scriptId: string;
   title: string;
   topic: string;
   content: string;
+  /** The scripts either side of this one in play order. */
+  previous: Neighbour | null;
+  next: Neighbour | null;
 };
 
 function ChunkText({
@@ -52,14 +61,27 @@ export function ScriptReader({
   title,
   topic,
   content,
+  previous,
+  next,
 }: ScriptReaderProps) {
+  const router = useRouter();
   const paragraphs = useMemo(() => splitParagraphs(content), [content]);
   const chunks = useMemo(() => buildChunks(content), [content]);
+
+  // Opens the next script and asks it to start playing straight away.
+  const openNext = useCallback(() => {
+    if (!next) return;
+    requestAutoplay(next.id);
+    router.push(`/scripts/${next.id}`);
+  }, [next, router]);
+
   const player = useSpeechPlayer({
     scriptId,
     title,
     subtitle: topic,
     chunks,
+    onFinished: next ? openNext : undefined,
+    onNext: next ? openNext : undefined,
   });
 
   const articleRef = useRef<HTMLElement>(null);
@@ -108,6 +130,48 @@ export function ScriptReader({
           </p>
         ))}
       </article>
+
+      {(previous || next) && (
+        <nav
+          aria-label="Other scripts"
+          className="mt-10 grid gap-2 sm:grid-cols-2"
+        >
+          {previous ? (
+            <Link
+              href={`/scripts/${previous.id}`}
+              onClick={() => player.playing && requestAutoplay(previous.id)}
+              className="flex items-center gap-3 rounded-lg border p-3 text-sm hover:bg-muted"
+            >
+              <ArrowLeft className="size-4 shrink-0 text-muted-foreground" />
+              <span className="min-w-0">
+                <span className="block text-xs text-muted-foreground">
+                  Previous
+                </span>
+                <span className="block truncate font-medium">
+                  {previous.title}
+                </span>
+              </span>
+            </Link>
+          ) : (
+            <span />
+          )}
+          {next && (
+            <Link
+              href={`/scripts/${next.id}`}
+              onClick={() => player.playing && requestAutoplay(next.id)}
+              className="flex items-center justify-between gap-3 rounded-lg border p-3 text-sm hover:bg-muted"
+            >
+              <span className="min-w-0">
+                <span className="block text-xs text-muted-foreground">
+                  Up next
+                </span>
+                <span className="block truncate font-medium">{next.title}</span>
+              </span>
+              <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+            </Link>
+          )}
+        </nav>
+      )}
 
       <ScriptPlayer player={player} />
     </>

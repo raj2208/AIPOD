@@ -19,8 +19,8 @@ export type SessionHandlers = {
   pause: () => void;
   seekBackward: () => void;
   seekForward: () => void;
-  previousParagraph: () => void;
-  nextParagraph: () => void;
+  previousTrack: () => void;
+  nextTrack: () => void;
 };
 
 /** One second of silence as a WAV file, built in memory. */
@@ -179,7 +179,7 @@ export class PlaybackSession {
     bind("pause", handlers.pause);
     bind("seekbackward", handlers.seekBackward);
     bind("seekforward", handlers.seekForward);
-    bind("previoustrack", handlers.previousParagraph);
-    bind("nexttrack", handlers.nextParagraph);
+    bind("previoustrack", handlers.previousTrack);
+    bind("nexttrack", handlers.nextTrack);
   }
 }

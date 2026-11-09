@@ -22,6 +22,10 @@ aipod-notes/
 
 A template of this layout lives in `notes-template/` in this repo.
 
+## Play order
+
+`playlist.yml` at the top of the notes repo lists script ids, first to last. Scripts it does not list come after, sorted by topic and title. The playlist is read like any other file: only when its hash changes. A typo in an id is reported after the next sync. See [player.md](player.md) for how playback uses the order.
+
 ## Script file format
 
 A script is a markdown file with a header (frontmatter) and the spoken text as its body.

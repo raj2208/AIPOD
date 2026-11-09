@@ -8,7 +8,6 @@ Questions not yet decided. Move an item to the relevant doc once it is settled.
 - Should the voice be one narrator, or a two-host conversation?
 - Is interview prep the first use case, or one use of a general note-revision tool?
 - Should there be interview-specific features such as spoken Q&A or spaced repetition?
-- In what order are notes played, given the AI does not curate? For example: file names, or an ordered list kept in the notes repo.
 - Where exactly is the line between changing form and changing content? Proposed: transitions, expanding abbreviations, and turning fragments into sentences are allowed. New facts, examples, numbers, analogies, and dropping or reordering points are not.
 
 ## Technical

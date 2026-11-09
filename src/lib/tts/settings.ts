@@ -9,6 +9,8 @@ export type PlayerSettings = {
   pitch: number;
   highlight: HighlightMode;
   autoScroll: boolean;
+  /** Start the next script by itself when one ends. */
+  autoPlayNext: boolean;
   /** Keep the screen on while playing. Costs battery. */
   keepScreenOn: boolean;
   /**
@@ -27,6 +29,7 @@ export const DEFAULT_SETTINGS: PlayerSettings = {
   pitch: 1,
   highlight: "word",
   autoScroll: true,
+  autoPlayNext: true,
   keepScreenOn: false,
   backgroundAudio: true,
 };
@@ -54,6 +57,7 @@ export function sanitizeSettings(raw: unknown): PlayerSettings {
         ? r.highlight
         : d.highlight,
     autoScroll: bool(r.autoScroll, d.autoScroll),
+    autoPlayNext: bool(r.autoPlayNext, d.autoPlayNext),
     keepScreenOn: bool(r.keepScreenOn, d.keepScreenOn),
     backgroundAudio: bool(r.backgroundAudio, d.backgroundAudio),
   };

@@ -46,6 +46,8 @@ export type EngineState = {
   /** The word being spoken inside the current chunk, when the engine reports it. */
   wordRange: { start: number; end: number } | null;
   error: string | null;
+  /** How many times a script has been read to the end. Never goes down. */
+  finished: number;
 };
 
 export type EngineSettings = {
@@ -73,6 +75,7 @@ export const IDLE_STATE: EngineState = {
   index: null,
   wordRange: null,
   error: null,
+  finished: 0,
 };
 
 export class SpeechEngine {
@@ -173,7 +176,9 @@ export class SpeechEngine {
   stop() {
     this.generation++;
     this.deps.getSynth()?.cancel();
-    if (this.state !== IDLE_STATE) this.set({ ...IDLE_STATE });
+    if (this.state !== IDLE_STATE) {
+      this.set({ ...IDLE_STATE, finished: this.state.finished });
+    }
   }
 
   /** Moves to a chunk. Keeps speaking if it was already speaking. */
@@ -290,7 +295,7 @@ export class SpeechEngine {
 
   private finish() {
     this.generation++;
-    this.set({ ...IDLE_STATE });
+    this.set({ ...IDLE_STATE, finished: this.state.finished + 1 });
     this.deps.onFinish?.();
   }
 

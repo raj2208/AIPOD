@@ -155,6 +155,12 @@ function SettingsPanel({ player }: { player: SpeechPlayer }) {
         onChange={(autoScroll) => updateSettings({ autoScroll })}
       />
       <SettingSwitch
+        label="Play next script"
+        hint="Start the next script when one ends."
+        checked={settings.autoPlayNext}
+        onChange={(autoPlayNext) => updateSettings({ autoPlayNext })}
+      />
+      <SettingSwitch
         label="Keep screen on"
         hint="Stops the phone sleeping. Uses more battery."
         checked={settings.keepScreenOn}

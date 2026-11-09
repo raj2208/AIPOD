@@ -120,6 +120,29 @@ describe("playing", () => {
     expect(onFinish).toHaveBeenCalledTimes(1);
   });
 
+  it("counts each time a script is read to the end", () => {
+    const { engine, synth } = setup();
+    expect(engine.getState().finished).toBe(0);
+
+    engine.play(2);
+    synth.finishCurrent();
+    expect(engine.getState().finished).toBe(1);
+
+    engine.play(2);
+    synth.finishCurrent();
+    expect(engine.getState().finished).toBe(2);
+  });
+
+  it("does not count a script that was stopped before the end", () => {
+    const { engine, synth } = setup();
+    engine.play(2);
+    synth.finishCurrent();
+    engine.play(0);
+    engine.stop();
+    // Stopping goes back to idle but keeps the count, so it never looks like a new ending.
+    expect(engine.getState()).toMatchObject({ status: "idle", index: null, finished: 1 });
+  });
+
   it("starts from a chosen chunk", () => {
     const { engine, synth } = setup();
     engine.play(2);

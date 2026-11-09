@@ -9,7 +9,7 @@ import { ScriptBadges } from "@/components/script-badges";
 import { ScriptReader } from "@/components/script-reader";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getScript } from "@/lib/scripts";
+import { getNeighbours, getScript } from "@/lib/scripts";
 
 async function ScriptDetail({
   params,
@@ -18,7 +18,10 @@ async function ScriptDetail({
 }) {
   await connection();
   const { id } = await params;
-  const script = await getScript(id);
+  const [script, { previous, next }] = await Promise.all([
+    getScript(id),
+    getNeighbours(id),
+  ]);
   if (!script) notFound();
 
   return (
@@ -41,6 +44,8 @@ async function ScriptDetail({
         title={script.title}
         topic={script.topic}
         content={script.content}
+        previous={previous && { id: previous.id, title: previous.title }}
+        next={next && { id: next.id, title: next.title }}
       />
     </>
   );

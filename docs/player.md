@@ -53,13 +53,14 @@ What is built:
 - **Auto-scroll.** The page follows the sentence being read.
 - **Phone integration.** Lock-screen controls (Media Session), an optional screen wake lock, and an optional silent audio loop (see below).
 - **Recovery.** A timer restarts speech that stopped on its own.
+- **Play order and auto-advance.** Scripts play in the order set by `playlist.yml` in the notes repo, then by topic and title. When one ends, the next opens and starts by itself, so a whole commute plays without touching the phone. This can be switched off in the player settings. The lock-screen "next" button opens the next script. Previous and next scripts are also shown under the text. The list shows each script's position and length, and the total.
 
 Design choices:
 
 - **Pause cancels the speech.** Resuming restarts the current sentence. The browser's own pause is unreliable on Android Chrome.
 - **Background audio.** On Android, browser speech alone is not treated as media playing. The player plays a silent audio loop next to the speech so the browser shows media controls and may keep the page alive with the screen off. This is an experiment, and it can be turned off in the player settings.
 
-Not built yet: playing the next script automatically. That depends on how notes are ordered, which is still an open question.
+Auto-advance opens the next script as a new page inside the same browser tab, and starts it right away. It is checked in desktop Chrome with a stand-in speech engine, with each script spoken once and in order. Whether the hand-over works with the phone's screen locked is part of the screen-lock test below: when a script ends, the next one has to start without the screen being touched.
 
 ## Running the screen-lock test
 
@@ -69,4 +70,5 @@ Wake lock and media controls only work on a secure page, so the phone cannot sim
 2. Open a script in Chrome on the phone and press play.
 3. Lock the screen and listen for 20 minutes or more.
 4. Try it with "Background audio" on and then off, and note which keeps playing.
-5. Record the result in [open-questions.md](open-questions.md).
+5. Use a playlist of two short scripts, and check that the second starts by itself after the first ends with the screen locked.
+6. Record the result in [open-questions.md](open-questions.md).
