@@ -23,6 +23,8 @@ describe("local source", () => {
     await writeFile(join(dir, "notes/deep/a.md"), "note a\n");
     await writeFile(join(dir, "scripts/a.script.md"), "script a\n");
     await writeFile(join(dir, "notes/image.png"), "not markdown");
+    await writeFile(join(dir, "playlist.yml"), "- a\n");
+    await writeFile(join(dir, "notes/playlist.yml"), "not the real one");
     await writeFile(join(dir, ".agent/skills/SKILL.md"), "skill");
     await writeFile(join(dir, "node_modules/pkg/README.md"), "pkg");
   });
@@ -36,6 +38,7 @@ describe("local source", () => {
     expect(commit).toBeNull();
     expect(files).toEqual([
       { path: "notes/deep/a.md", sha: gitBlobSha("note a\n") },
+      { path: "playlist.yml", sha: gitBlobSha("- a\n") },
       { path: "scripts/a.script.md", sha: gitBlobSha("script a\n") },
     ]);
   });
@@ -82,6 +85,8 @@ describe("github source", () => {
             { path: "scripts/a.script.md", type: "blob", sha: "aa" },
             { path: "notes/a.md", type: "blob", sha: "bb" },
             { path: "notes/pic.png", type: "blob", sha: "cc" },
+            { path: "playlist.yml", type: "blob", sha: "ee" },
+            { path: "other/playlist.yml", type: "blob", sha: "ff" },
             { path: ".github/x.md", type: "blob", sha: "dd" },
           ],
         });
@@ -99,6 +104,7 @@ describe("github source", () => {
     expect(listing.commit).toBe(COMMIT);
     expect(listing.files).toEqual([
       { path: "notes/a.md", sha: "bb" },
+      { path: "playlist.yml", sha: "ee" },
       { path: "scripts/a.script.md", sha: "aa" },
     ]);
     expect(fetchMock).toHaveBeenCalledTimes(2);

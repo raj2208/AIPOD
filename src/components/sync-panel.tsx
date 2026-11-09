@@ -27,8 +27,8 @@ export function SyncPanel({ state }: { state: SyncState | null }) {
           <TriangleAlert />
           <AlertTitle>
             {errors.length === 1
-              ? "1 script file could not be loaded"
-              : `${errors.length} script files could not be loaded`}
+              ? "1 file needs attention"
+              : `${errors.length} files need attention`}
           </AlertTitle>
           <AlertDescription>
             <ul className="mt-1 space-y-1">

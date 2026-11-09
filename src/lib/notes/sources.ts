@@ -2,12 +2,17 @@ import { readdir, readFile } from "node:fs/promises";
 import { join, relative, resolve, sep } from "node:path";
 
 import { gitBlobSha } from "./git-hash";
+import { PLAYLIST_PATH } from "./playlist";
 import type { NotesListing, NotesSource, RepoFile } from "./types";
 
 const IGNORED_SEGMENT = /^(\..*|node_modules)$/;
 
-/** Markdown files outside hidden folders (.git, .agent, ...) and node_modules. */
+/**
+ * Markdown files outside hidden folders (.git, .agent, ...) and node_modules,
+ * plus the playlist at the top of the repo.
+ */
 function isNoteFile(path: string): boolean {
+  if (path === PLAYLIST_PATH) return true;
   return (
     path.endsWith(".md") &&
     !path.split("/").some((segment) => IGNORED_SEGMENT.test(segment))

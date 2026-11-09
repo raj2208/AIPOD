@@ -70,6 +70,10 @@ export const syncState = pgTable("sync_state", {
   commit: text("commit"),
   syncedAt: timestamp("synced_at", { withTimezone: true }).notNull(),
   report: jsonb("report").$type<SyncReport>().notNull(),
+  /** Script ids in play order, from playlist.yml. */
+  playlist: jsonb("playlist").$type<string[]>().notNull().default([]),
+  /** Hash of playlist.yml when it was read, so it is only re-read when it changes. */
+  playlistHash: text("playlist_hash"),
 });
 
 export type SyncState = typeof syncState.$inferSelect;

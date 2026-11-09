@@ -9,7 +9,7 @@ export type NotesListing = {
 
 /** Where notes and scripts are read from: a local folder or a GitHub repo. */
 export interface NotesSource {
-  /** Every markdown file, with its hash. Reads no file contents. */
+  /** Every markdown file and the playlist, with hashes. Reads no file contents. */
   list(): Promise<NotesListing>;
   /** The full text of one file from the listing. */
   read(file: RepoFile): Promise<string>;

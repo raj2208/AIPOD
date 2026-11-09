@@ -51,7 +51,7 @@ AI output varies between runs and between models. To get the same audio every ti
 
 ## 4. Fidelity check
 
-The main risk is the AI drifting from the facts while making things sound smooth. Planned guardrails:
+The main risk is the AI drifting from the facts while making things sound smooth. Guardrails:
 
 - **Automatic check (built).** When a script is loaded, AIPOD compares it with the exact note it was written from, without calling an AI model. It looks for code terms, bold terms, and numbers in the note that the script never says; numbers in the script that the note never had (the usual sign of an invented fact); and a script much shorter than its note. It is a guide, not a proof: reworded points can be flagged, and a changed fact that uses the same words is not caught. Results show on the script's page and as a "Check facts" flag in the list.
 - **Stale scripts.** If the note changes after the script was written, the script is flagged "Note changed" and no check is shown, since it no longer applies.

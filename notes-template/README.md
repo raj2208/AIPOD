@@ -5,6 +5,7 @@ This folder is the layout for your notes repo. AIPOD reads your notes and script
 ```
 notes/                     your markdown notes, in any folders you like
 scripts/                   one *.script.md per note, mirroring the notes folders
+playlist.yml               optional: the order scripts are played in
 .agent/skills/script/      the /script skill that writes scripts from notes
 .claude/skills/script      link so Claude Code finds the skill
 ```
@@ -20,6 +21,10 @@ scripts/                   one *.script.md per note, mirroring the notes folders
 ## Developing AIPOD against this folder
 
 `NOTES_DIR=./notes-template` in `.env.local` makes AIPOD read this folder directly, with no GitHub needed. Run `pnpm sync` after changing anything here.
+
+## Play order
+
+`playlist.yml` lists script ids, first to last. Scripts it does not list come after, sorted by topic and title. A typo in an id is reported after the next sync.
 
 ## Rules worth knowing
 

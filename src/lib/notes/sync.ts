@@ -1,4 +1,4 @@
-import { inArray, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 import * as schema from "../../db/schema";
@@ -11,6 +11,7 @@ import {
   planSync,
   type ParsedFile,
 } from "./plan";
+import { PLAYLIST_PATH, parsePlaylist } from "./playlist";
 import { parseScriptFile } from "./script-file";
 import {
   SYNC_STATE_ID,
@@ -107,6 +108,49 @@ export async function runSync(
     .map((p) => p.script.id)
     .filter((id) => knownIds.has(id));
   const removed = findRemoved(files, stored, acceptedIds);
+
+  // The playlist is one small file. It is downloaded only when its hash
+  // differs from the one we stored, like everything else.
+  const [previousState] = await db
+    .select({ playlist: syncState.playlist, playlistHash: syncState.playlistHash })
+    .from(syncState)
+    .where(eq(syncState.id, SYNC_STATE_ID));
+  let playlist = previousState?.playlist ?? [];
+  let playlistHash = previousState?.playlistHash ?? null;
+  const playlistFile = files.find((file) => file.path === PLAYLIST_PATH);
+  if (!playlistFile) {
+    playlist = [];
+    playlistHash = null;
+  } else if (playlistFile.sha !== playlistHash) {
+    try {
+      const result = parsePlaylist(await source.read(playlistFile));
+      if (result.ok) {
+        playlist = result.ids;
+        playlistHash = playlistFile.sha;
+      } else {
+        // Keep the old playlist, and try again next sync.
+        errors.push({ path: PLAYLIST_PATH, message: result.error });
+      }
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      errors.push({ path: PLAYLIST_PATH, message: `Could not read the file: ${reason}` });
+    }
+  }
+
+  // A typo in the playlist would otherwise be skipped without a word.
+  const removedIds = new Set(removed);
+  const liveIds = new Set([
+    ...stored.filter((row) => !removedIds.has(row.id) && !row.removedAt).map((row) => row.id),
+    ...acceptedIds,
+  ]);
+  for (const id of playlist) {
+    if (!liveIds.has(id)) {
+      errors.push({
+        path: PLAYLIST_PATH,
+        message: `"${id}" is not the id of any script.`,
+      });
+    }
+  }
 
   // The fidelity check compares a script with the exact note it was written
   // from. A note is downloaded only when a script is new or changed, or when
@@ -237,10 +281,10 @@ export async function runSync(
 
     await tx
       .insert(syncState)
-      .values({ id: SYNC_STATE_ID, commit, syncedAt: now, report })
+      .values({ id: SYNC_STATE_ID, commit, syncedAt: now, report, playlist, playlistHash })
       .onConflictDoUpdate({
         target: syncState.id,
-        set: { commit, syncedAt: now, report },
+        set: { commit, syncedAt: now, report, playlist, playlistHash },
       });
   });
 
