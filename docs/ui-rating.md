@@ -19,17 +19,17 @@ The score is a weighted average of the areas below. Each area is scored out of 1
 
 ## Scores
 
-| Area | Weight | v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7 | v8 | v9 | v10 | v11 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Playlist on a phone | 20% | 3 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 | 9 | 9 | 9 |
-| Player and reading | 25% | 4 | 4 | 7 | 7 | 7 | 8 | 8 | 8 | 9 | 9 | 9 | 9 |
-| Look and feel | 15% | 4 | 4 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 9 |
-| Navigation and hierarchy | 10% | 5 | 5 | 5 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 | 9 |
-| Dark mode | 10% | 2 | 2 | 2 | 7 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8 |
-| Touch and accessibility | 10% | 5 | 5 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 | 9 | 9 |
-| States and feedback | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 | 9 | 9 |
-| Desktop | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 | 9 |
-| **Overall** | | **4.0** | **5.0** | **6.0** | **6.5** | **7.1** | **7.6** | **7.9** | **8.1** | **8.4** | **8.5** | **8.7** | **8.9** |
+| Area | Weight | v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7 | v8 | v9 | v10 | v11 | v12 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Playlist on a phone | 20% | 3 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 | 9 | 9 | 9 | 9 |
+| Player and reading | 25% | 4 | 4 | 7 | 7 | 7 | 8 | 8 | 8 | 9 | 9 | 9 | 9 | 9 |
+| Look and feel | 15% | 4 | 4 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 |
+| Navigation and hierarchy | 10% | 5 | 5 | 5 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 |
+| Dark mode | 10% | 2 | 2 | 2 | 7 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 9 |
+| Touch and accessibility | 10% | 5 | 5 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 | 9 | 9 | 9 |
+| States and feedback | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 |
+| Desktop | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 | 9 | 9 |
+| **Overall** | | **4.0** | **5.0** | **6.0** | **6.5** | **7.1** | **7.6** | **7.9** | **8.1** | **8.4** | **8.5** | **8.7** | **8.9** | **9.0** |
 
 ## v0: problems found
 
@@ -57,3 +57,17 @@ Biggest weighted gap first: the playlist, then the player, then dark mode, then 
 - **v9, states and feedback.** Every state now has a designed screen instead of plain text: an empty playlist (with the three steps to add a script), a page that does not exist, a script that does not exist, and a page that fails (with a Try again button). They share one look. Syncing now reports its result in a toast, which is seen wherever you are on the page and read out to screen readers, instead of a line of text appearing below a button.
 - **v10, desktop.** On a wide screen a script page now has the playlist beside it: a rail listing every script with its length, the current one highlighted, so you can jump to any script without going back. The player bar's controls line up exactly with the reading column. Keyboard shortcuts work on a computer: space plays and pauses, the left and right arrows skip 15 seconds, and N opens the next script. They leave alone any key that a focused button, slider, menu, or the review panel already uses. The playlist page is a little wider on large screens. Phones are unchanged.
 - **v11, home page and navigation.** The home page now shows the product instead of describing it: a picture of the real player, with the highlighted word moving along the sentence the way it does when reading (it stands still for people who ask for less motion). On a phone, script pages no longer repeat "Playlist" twice at the top: the header link already says where you are, and the old back link is gone, which also lets the text start higher. Each script has its own page title, so browser tabs, history, and the Android task switcher say which script is open.
+- **v12, dark mode and a final check.** Dark mode is now consistent everywhere: the review panels, the theme menu, the toasts, the settings sheet, and the new home page preview were each checked in dark. A last accessibility run over 40 combinations (10 pages and open states, phone and desktop, light and dark) found two problems introduced by later work, both fixed: error pages had no top-level heading, and the header navigation and the desktop playlist rail were two unnamed navigation regions. A last end-to-end run on a production build passed: playlist, playing, automatic hand-over to the next script, resume, theme, and the error screen.
+
+## Result
+
+**9.0 out of 10.** From 4.0 at the start.
+
+How far to trust that number: it is a judgement from screenshots at phone and desktop sizes, in light and dark, plus automated checks (the axe accessibility engine, scripted browser tests with a stand-in speech engine). It was not tested by a person on a real Android phone.
+
+What would still move it, honestly:
+
+- **Real-device use.** Whether the player bar sits well under a real thumb, whether the real Android voice highlights words in step, and above all whether speech keeps playing with the screen locked (see [player.md](player.md)). None of this can be seen in a desktop browser.
+- **The theme menu pop-up** is drawn outside the page's landmark regions, so the accessibility engine notes it. This is normal for pop-up menus and does not affect use.
+- **Playback that survives leaving a script.** Opening the playlist or another script stops the current one. A player that lives outside the page, so browsing never interrupts listening, would be the biggest remaining improvement. It is a larger change to how playback is built.
+

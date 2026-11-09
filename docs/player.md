@@ -48,10 +48,11 @@ What is built:
 
 - **Sentence chunks.** Scripts are cut into sentences, and short ones are joined up to 240 characters, never across a paragraph.
 - **Highlighting.** The current chunk is highlighted, and the current word too when the browser reports word positions. The mode can be off, sentence, or word. Tapping a sentence jumps to it.
-- **Controls.** Play and pause, back and forward 15 seconds, a progress slider, voice, speed from 0.75x to 3x, and pitch. Settings are saved in the browser.
+- **Controls.** The player is a bar docked to the bottom of the screen, within thumb's reach: a position slider, play and pause, back and forward 15 seconds, and a speed chip that steps through the speeds when tapped. Everything else (a speed picker from 0.75x to 3x, voice, pitch, text size, highlighting, and the switches) is in a bottom sheet. Settings are saved in the browser.
 - **Saved position.** Each script remembers where you stopped, and the scripts list offers a "Continue listening" shortcut back to the last one left part way. Positions are kept in the browser on that device.
-- **Auto-scroll.** The page follows the sentence being read.
-- **Phone integration.** Lock-screen controls (Media Session), an optional screen wake lock, and an optional silent audio loop (see below).
+- **Auto-scroll.** The page follows the sentence being read. If you scroll yourself, it stops following so it does not pull you back, and a "Jump to current sentence" button appears. It follows again when you tap it or restart playback.
+- **On a computer.** Scripts show the playlist beside them, and the player lines up with the text. Space plays and pauses, the left and right arrows skip 15 seconds, and N opens the next script.
+- **Phone integration.** Lock-screen controls (Media Session) with the app icon as artwork, an optional screen wake lock, and an optional silent audio loop (see below).
 - **Recovery.** A timer restarts speech that stopped on its own.
 - **Installable.** Chrome on Android can install AIPOD to the home screen, where it opens full screen with its own icon and starts on the scripts list. Chrome reports no installability errors for it. Installing needs the deployed site to be served over HTTPS.
 - **Play order and auto-advance.** Scripts play in the order set by `playlist.yml` in the notes repo, then by topic and title. When one ends, the next opens and starts by itself, so a whole commute plays without touching the phone. This can be switched off in the player settings. The lock-screen "next" button opens the next script. Previous and next scripts are also shown under the text. The list shows each script's position and length, and the total.
