@@ -39,7 +39,7 @@ function ChunkText({
 
   const word = mode === "word" ? wordRange : null;
   return (
-    <span className="rounded bg-primary/10 box-decoration-clone">
+    <span className="rounded bg-primary/10 box-decoration-clone dark:bg-primary/20">
       {word ? (
         <>
           {text.slice(0, word.start)}
@@ -103,7 +103,7 @@ export function ScriptReader({
 
   return (
     <>
-      <article ref={articleRef} className="space-y-4 text-lg leading-relaxed">
+      <article ref={articleRef} className="space-y-5 text-lg leading-relaxed text-pretty">
         {paragraphs.map((_, paragraphIndex) => (
           <p key={paragraphIndex}>
             {chunks

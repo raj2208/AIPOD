@@ -13,11 +13,11 @@ export function Hero() {
     <section className="relative overflow-hidden border-b">
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/10 via-background to-background"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(70%_60%_at_50%_0%,color-mix(in_oklab,var(--primary)_20%,transparent),transparent_70%)]"
       />
 
       <div className="mx-auto flex w-full max-w-5xl flex-col items-center px-4 pt-20 pb-16 text-center sm:pt-28">
-        <Badge variant="secondary" className="mb-6 gap-1.5">
+        <Badge className="mb-6 h-7 gap-1.5 bg-accent px-3 text-sm text-accent-foreground">
           <Bus className="size-3.5" />
           Built for the commute
         </Badge>
@@ -54,7 +54,7 @@ export function Hero() {
           {BARS.map((height, index) => (
             <span
               key={index}
-              className="wave-bar w-1.5 rounded-full bg-primary/70 sm:w-2"
+              className="wave-bar w-1.5 rounded-full bg-gradient-to-t from-primary/40 to-primary sm:w-2"
               style={{
                 height: `${height}%`,
                 animationDelay: `${(index % 7) * -0.23}s`,

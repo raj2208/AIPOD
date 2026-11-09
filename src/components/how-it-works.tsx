@@ -40,9 +40,13 @@ export function HowItWorks() {
         {STEPS.map((step, index) => (
           <Card key={step.title}>
             <CardHeader>
-              <div className="mb-2 flex items-center gap-2 text-muted-foreground">
-                <step.icon className="size-5" />
-                <span className="text-xs font-medium">Step {index + 1}</span>
+              <div className="mb-3 flex items-center gap-3">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                  <step.icon className="size-5" />
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Step {index + 1}
+                </span>
               </div>
               <CardTitle>{step.title}</CardTitle>
               <CardDescription>{step.description}</CardDescription>

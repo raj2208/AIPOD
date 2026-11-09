@@ -36,7 +36,7 @@ export function ContinueListening({ scripts }: { scripts: ContinueScript[] }) {
   return (
     <Link
       href={`/scripts/${script.id}`}
-      className="group mb-8 flex items-center gap-4 rounded-2xl bg-primary p-4 text-primary-foreground shadow-sm transition-transform active:scale-[0.99]"
+      className="group mb-8 flex items-center gap-4 rounded-2xl bg-primary p-4 text-primary-foreground shadow-md shadow-primary/20 transition-transform active:scale-[0.99] dark:border dark:border-primary/30 dark:bg-primary/15 dark:text-foreground dark:shadow-none"
     >
       <span className="min-w-0 flex-1">
         <span className="block text-xs font-medium opacity-70">
@@ -52,10 +52,10 @@ export function ContinueListening({ scripts }: { scripts: ContinueScript[] }) {
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={Math.round(done * 100)}
-            className="h-1 flex-1 overflow-hidden rounded-full bg-primary-foreground/20"
+            className="h-1.5 flex-1 overflow-hidden rounded-full bg-primary-foreground/25 dark:bg-foreground/15"
           >
             <span
-              className="block h-full rounded-full bg-primary-foreground"
+              className="block h-full rounded-full bg-primary-foreground dark:bg-primary"
               style={{ width: `${done * 100}%` }}
             />
           </span>
@@ -64,7 +64,7 @@ export function ContinueListening({ scripts }: { scripts: ContinueScript[] }) {
           </span>
         </span>
       </span>
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-foreground text-primary transition-transform group-hover:scale-105">
+      <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-foreground text-primary transition-transform group-hover:scale-105 dark:bg-primary dark:text-primary-foreground">
         <Play className="size-5 fill-current" />
       </span>
     </Link>
