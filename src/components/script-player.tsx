@@ -26,11 +26,19 @@ import {
   formatSpeed,
   nextSpeed,
   type HighlightMode,
+  type TextSize,
 } from "@/lib/tts/settings";
 import { SKIP_SECONDS, type SpeechPlayer } from "@/lib/tts/use-speech-player";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_VOICE = "__default__";
+
+const TEXT_SIZE_OPTIONS: { value: TextSize; name: string; sample: string }[] = [
+  { value: "small", name: "Small", sample: "text-sm" },
+  { value: "medium", name: "Medium", sample: "text-base" },
+  { value: "large", name: "Large", sample: "text-xl" },
+  { value: "huge", name: "Extra large", sample: "text-2xl" },
+];
 
 const HIGHLIGHT_OPTIONS: { value: HighlightMode; label: string }[] = [
   { value: "off", label: "Off" },
@@ -121,7 +129,7 @@ function Choice<T extends string | number>({
   columns,
 }: {
   label: string;
-  options: { value: T; label: string }[];
+  options: { value: T; label: React.ReactNode; ariaLabel?: string }[];
   value: T;
   onChange: (value: T) => void;
   columns: string;
@@ -133,6 +141,7 @@ function Choice<T extends string | number>({
           key={String(option.value)}
           variant={value === option.value ? "default" : "outline"}
           aria-pressed={value === option.value}
+          aria-label={option.ariaLabel}
           onClick={() => onChange(option.value)}
           className="h-11 text-sm"
         >
@@ -191,6 +200,21 @@ function SettingsSheet({ player }: { player: SpeechPlayer }) {
               }))}
               value={settings.rate}
               onChange={(rate) => updateSettings({ rate })}
+            />
+          </section>
+
+          <section className="space-y-3">
+            <h3 className="font-medium">Text size</h3>
+            <Choice
+              label="Text size"
+              columns="grid-cols-4"
+              options={TEXT_SIZE_OPTIONS.map((option) => ({
+                value: option.value,
+                ariaLabel: option.name,
+                label: <span className={option.sample}>Aa</span>,
+              }))}
+              value={settings.textSize}
+              onChange={(textSize) => updateSettings({ textSize })}
             />
           </section>
 
@@ -354,7 +378,7 @@ export function ScriptPlayer({ player }: { player: SpeechPlayer }) {
               aria-label={player.playing ? "Pause" : "Play"}
               disabled={!supported}
               onClick={player.toggle}
-              className="size-16 rounded-full shadow-md"
+              className="size-16 rounded-full shadow-md transition-transform active:scale-95"
             >
               {player.playing ? (
                 <Pause className="size-7 fill-current" />

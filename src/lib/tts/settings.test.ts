@@ -44,6 +44,12 @@ describe("sanitizeSettings", () => {
     expect(sanitizeSettings("x")).toEqual(DEFAULT_SETTINGS);
   });
 
+  it("keeps a chosen text size and ignores an unknown one", () => {
+    expect(sanitizeSettings({ textSize: "huge" }).textSize).toBe("huge");
+    expect(sanitizeSettings({ textSize: "gigantic" }).textSize).toBe("medium");
+    expect(sanitizeSettings({}).textSize).toBe("medium");
+  });
+
   it("keeps good values and clamps wild ones", () => {
     const result = sanitizeSettings({ rate: 99, pitch: 1.5, highlight: "off" });
     expect(result.rate).toBe(4);

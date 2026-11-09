@@ -2,12 +2,18 @@ import { createLocalStore } from "./storage";
 
 export type HighlightMode = "off" | "sentence" | "word";
 
+export type TextSize = "small" | "medium" | "large" | "huge";
+
+export const TEXT_SIZES: TextSize[] = ["small", "medium", "large", "huge"];
+
 export type PlayerSettings = {
   /** Name of the chosen voice. Empty means the system default. */
   voiceName: string;
   rate: number;
   pitch: number;
   highlight: HighlightMode;
+  /** How big the script text is drawn. */
+  textSize: TextSize;
   autoScroll: boolean;
   /** Start the next script by itself when one ends. */
   autoPlayNext: boolean;
@@ -41,6 +47,7 @@ export const DEFAULT_SETTINGS: PlayerSettings = {
   rate: 1,
   pitch: 1,
   highlight: "word",
+  textSize: "medium",
   autoScroll: true,
   autoPlayNext: true,
   keepScreenOn: false,
@@ -69,6 +76,9 @@ export function sanitizeSettings(raw: unknown): PlayerSettings {
       r.highlight === "off" || r.highlight === "sentence" || r.highlight === "word"
         ? r.highlight
         : d.highlight,
+    textSize: TEXT_SIZES.includes(r.textSize as TextSize)
+      ? (r.textSize as TextSize)
+      : d.textSize,
     autoScroll: bool(r.autoScroll, d.autoScroll),
     autoPlayNext: bool(r.autoPlayNext, d.autoPlayNext),
     keepScreenOn: bool(r.keepScreenOn, d.keepScreenOn),

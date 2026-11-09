@@ -164,6 +164,10 @@ export class PlaybackSession {
         title: info.title,
         artist: info.artist,
         album: info.album,
+        artwork: [
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+        ],
       });
     } catch {
       // MediaMetadata is not available.
