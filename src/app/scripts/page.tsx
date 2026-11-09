@@ -2,6 +2,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { ContinueListening } from "@/components/continue-listening";
+import { PlayAllButton } from "@/components/play-all-button";
 import { ScriptRow } from "@/components/script-row";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SyncErrors, SyncStatus } from "@/components/sync-panel";
@@ -38,16 +39,15 @@ function EmptyPlaylist() {
 }
 
 function Playlist({ scripts }: { scripts: Script[] }) {
-  const lengths = scripts.map((script) => estimateSeconds(script.content));
-
   return (
-    <ol className="divide-y overflow-hidden rounded-2xl border bg-card">
+    <ol className="animate-in divide-y overflow-hidden rounded-2xl border bg-card duration-300 fade-in-0 slide-in-from-bottom-2">
       {scripts.map((script, index) => (
         <ScriptRow
           key={script.id}
           script={script}
           position={index + 1}
-          seconds={lengths[index]}
+          seconds={estimateSeconds(script.content)}
+          chunks={buildChunks(script.content).length}
         />
       ))}
     </ol>
@@ -68,13 +68,16 @@ async function PlaylistContent() {
 
   return (
     <>
-      <header className="mb-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Playlist</h1>
-        <p className="mt-1 text-muted-foreground">
-          {scripts.length === 0
-            ? "Your revision scripts will appear here."
-            : `${scripts.length} ${scripts.length === 1 ? "script" : "scripts"} · about ${formatDuration(total)} in all`}
-        </p>
+      <header className="mb-6 flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight">Playlist</h1>
+          <p className="mt-1 text-muted-foreground">
+            {scripts.length === 0
+              ? "Your revision scripts will appear here."
+              : `${scripts.length} ${scripts.length === 1 ? "script" : "scripts"} · about ${formatDuration(total)} in all`}
+          </p>
+        </div>
+        {scripts.length > 0 && <PlayAllButton firstId={scripts[0].id} />}
       </header>
 
       <ContinueListening

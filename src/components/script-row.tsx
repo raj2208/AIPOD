@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
+import { RowProgress } from "@/components/row-progress";
 import { ScriptBadges } from "@/components/script-badges";
 import type { Script } from "@/db/schema";
 import { formatDuration } from "@/lib/duration";
@@ -10,10 +11,12 @@ export function ScriptRow({
   script,
   position,
   seconds,
+  chunks,
 }: {
   script: Script;
   position: number;
   seconds: number;
+  chunks: number;
 }) {
   return (
     <li>
@@ -37,6 +40,7 @@ export function ScriptRow({
             <span>{formatDuration(seconds)}</span>
             <ScriptBadges script={script} />
           </span>
+          <RowProgress scriptId={script.id} chunks={chunks} seconds={seconds} />
         </span>
         <ChevronRight
           aria-hidden

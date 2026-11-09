@@ -19,17 +19,17 @@ The score is a weighted average of the areas below. Each area is scored out of 1
 
 ## Scores
 
-| Area | Weight | v0 | v1 | v2 | v3 | v4 | v5 | v6 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Playlist on a phone | 20% | 3 | 8 | 8 | 8 | 8 | 8 | 8 |
-| Player and reading | 25% | 4 | 4 | 7 | 7 | 7 | 8 | 8 |
-| Look and feel | 15% | 4 | 4 | 5 | 5 | 8 | 8 | 8 |
-| Navigation and hierarchy | 10% | 5 | 5 | 5 | 5 | 5 | 8 | 8 |
-| Dark mode | 10% | 2 | 2 | 2 | 7 | 8 | 8 | 8 |
-| Touch and accessibility | 10% | 5 | 5 | 6 | 6 | 6 | 6 | 9 |
-| States and feedback | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
-| Desktop | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
-| **Overall** | | **4.0** | **5.0** | **6.0** | **6.5** | **7.1** | **7.6** | **7.9** |
+| Area | Weight | v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Playlist on a phone | 20% | 3 | 8 | 8 | 8 | 8 | 8 | 8 | 9 |
+| Player and reading | 25% | 4 | 4 | 7 | 7 | 7 | 8 | 8 | 8 |
+| Look and feel | 15% | 4 | 4 | 5 | 5 | 8 | 8 | 8 | 8 |
+| Navigation and hierarchy | 10% | 5 | 5 | 5 | 5 | 5 | 8 | 8 | 8 |
+| Dark mode | 10% | 2 | 2 | 2 | 7 | 8 | 8 | 8 | 8 |
+| Touch and accessibility | 10% | 5 | 5 | 6 | 6 | 6 | 6 | 9 | 9 |
+| States and feedback | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
+| Desktop | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
+| **Overall** | | **4.0** | **5.0** | **6.0** | **6.5** | **7.1** | **7.6** | **7.9** | **8.1** |
 
 ## v0: problems found
 
@@ -52,3 +52,4 @@ Biggest weighted gap first: the playlist, then the player, then dark mode, then 
 - **v4, look and feel.** The grey defaults gave way to an indigo identity. Every neutral is tinted slightly toward it so the app feels like one thing. Both themes have their own tuned colours: in light the Continue card is a bold indigo card, in dark it is a calm tinted one instead of a glaring white block. The play button, the highlighted word, the logo, and the app icon all use the brand colour. The home page has a soft brand glow, a waveform with depth, and icon chips on the how-it-works cards. The header is opaque so text no longer ghosts through it.
 - **v5, script page and navigation.** The top of a script page used to be a status alert, a "compare" box, and a file path. It is now a back link, a line saying where the script sits in the playlist ("3 of 6 · PostgreSQL · 1 min"), the title, and one review row. That row is closed by default and colour-coded: red if the note changed, amber if the fact check found differences, plain otherwise. Opened, it holds the findings and the note itself. The header link says "Playlist" to match the page and shows when you are on it.
 - **v6, accessibility.** Measured with the axe accessibility engine on every page in light and dark, and with the settings sheet, theme menu, and review panel open. It found one real problem, an unlabelled slider, which is fixed; the pages now have no violations. Keyboard use was checked by tabbing through: a "skip to content" link appears first, every tappable row and card shows a clear focus ring, and the player is reachable. Motion is switched off for people who ask for less of it. One standard note remains: the theme menu pop-up sits outside the page landmarks, which is normal for pop-up menus.
+- **v7, playlist actions.** A "Play all" button starts the first script from the top, and every script after it follows on its own. Scripts you have started show a thin progress bar and the time left right in the list, and the list fades in gently.
