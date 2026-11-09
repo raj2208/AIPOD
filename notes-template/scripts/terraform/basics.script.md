@@ -1,3 +1,11 @@
+---
+id: terraform-basics
+title: Terraform basics
+topic: Terraform
+source: notes/terraform/basics.md
+source_hash: 56bbea268a50ac2660414091ee952fc986140e45
+status: draft
+---
 Let's revise Terraform. By the end of this session, you should be able to explain what it is, how its workflow runs, and why its state file matters so much.
 
 Terraform is an infrastructure as code tool made by HashiCorp. Instead of clicking through a cloud console to create servers, networks, and databases, you describe what you want in configuration files, and Terraform makes it real. Those files are written in a language called HCL, the HashiCorp Configuration Language, and they end in dot tf.

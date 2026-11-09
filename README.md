@@ -21,4 +21,8 @@ pnpm dev
 
 Then open http://localhost:3000.
 
+## Where scripts come from
+
+Scripts are not written in the app. They live as markdown files in a notes repo and are loaded into Postgres by a sync. `notes-template/` is the layout of that repo, with a sample Terraform note and the `/script` skill that writes scripts from notes. By default `.env.example` points `NOTES_DIR` at it, so `pnpm sync` works without GitHub. See [docs/architecture.md](docs/architecture.md).
+
 Run the tests with `pnpm test`.
