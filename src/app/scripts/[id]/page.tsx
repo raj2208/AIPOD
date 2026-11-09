@@ -5,6 +5,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { FidelityNotice } from "@/components/fidelity-notice";
+import { NoteComparison } from "@/components/note-comparison";
 import { ScriptBadges } from "@/components/script-badges";
 import { ScriptReader } from "@/components/script-reader";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +39,7 @@ async function ScriptDetail({
       </div>
 
       <FidelityNotice script={script} />
+      <NoteComparison script={script} />
 
       <ScriptReader
         scriptId={script.id}

@@ -68,7 +68,7 @@ export async function runSync(
       notePath: scripts.notePath,
       sourceHash: scripts.sourceHash,
       noteHash: scripts.noteHash,
-      hasFidelity: sql<boolean>`${scripts.fidelity} is not null`,
+      hasFidelity: sql<boolean>`${scripts.fidelity} is not null and ${scripts.noteContent} is not null`,
       removedAt: scripts.removedAt,
     })
     .from(scripts);
@@ -161,13 +161,15 @@ export async function runSync(
     if (!noteReads.has(key)) noteReads.set(key, source.read({ path, sha }));
     return noteReads.get(key)!;
   };
+  type Checked = { fidelity: FidelityReport; noteContent: string };
   const check = async (
     path: string,
     noteHash: string,
     content: string,
-  ): Promise<FidelityReport | null> => {
+  ): Promise<Checked | null> => {
     try {
-      return checkFidelity(await readNote(path, noteHash), content);
+      const noteContent = await readNote(path, noteHash);
+      return { fidelity: checkFidelity(noteContent, content), noteContent };
     } catch (error) {
       const reason = error instanceof Error ? error.message : String(error);
       errors.push({ path, message: `Could not check against the note: ${reason}` });
@@ -175,11 +177,11 @@ export async function runSync(
     }
   };
 
-  const fidelityById = new Map<string, FidelityReport | null>();
+  const checkedById = new Map<string, Checked | null>();
   await mapLimit(claimed.accepted, FETCH_CONCURRENCY, async ({ script }) => {
     const noteHash = hashByPath.get(script.source) ?? null;
     const fresh = noteHash !== null && noteHash === script.source_hash;
-    fidelityById.set(
+    checkedById.set(
       script.id,
       fresh ? await check(script.source, noteHash, script.content) : null,
     );
@@ -193,13 +195,18 @@ export async function runSync(
           .where(inArray(scripts.id, plan.fidelityToCompute.map((x) => x.row.id)))
       : [];
   const contentById = new Map(pendingContent.map((row) => [row.id, row.content]));
-  const fidelityUpdates: { id: string; fidelity: FidelityReport | null }[] =
-    plan.fidelityToClear.map((id) => ({ id, fidelity: null }));
+  // Clearing a report keeps the stored note: it is the version the script was
+  // written from, which is what a reader wants once the note has moved on.
+  const fidelityUpdates: {
+    id: string;
+    fidelity: FidelityReport | null;
+    noteContent?: string;
+  }[] = plan.fidelityToClear.map((id) => ({ id, fidelity: null }));
   await mapLimit(plan.fidelityToCompute, FETCH_CONCURRENCY, async ({ row, noteHash }) => {
     const content = contentById.get(row.id);
     if (content === undefined) return;
-    const fidelity = await check(row.notePath, noteHash, content);
-    if (fidelity) fidelityUpdates.push({ id: row.id, fidelity });
+    const checked = await check(row.notePath, noteHash, content);
+    if (checked) fidelityUpdates.push({ id: row.id, ...checked });
   });
 
   const report: SyncReport = {
@@ -228,7 +235,8 @@ export async function runSync(
             noteHash: hashByPath.get(script.source) ?? null,
             model: script.model ?? null,
             skillVersion: script.skill_version ?? null,
-            fidelity: fidelityById.get(script.id) ?? null,
+            fidelity: checkedById.get(script.id)?.fidelity ?? null,
+            noteContent: checkedById.get(script.id)?.noteContent ?? null,
             updatedAt: now,
           })),
         )
@@ -247,6 +255,7 @@ export async function runSync(
             model: sql`excluded.model`,
             skillVersion: sql`excluded.skill_version`,
             fidelity: sql`excluded.fidelity`,
+            noteContent: sql`excluded.note_content`,
             removedAt: null,
             updatedAt: now,
           },
@@ -268,8 +277,8 @@ export async function runSync(
         .where(sql`${scripts.id} = ${id}`);
     }
 
-    for (const { id, fidelity } of fidelityUpdates) {
-      await tx.update(scripts).set({ fidelity }).where(sql`${scripts.id} = ${id}`);
+    for (const { id, ...values } of fidelityUpdates) {
+      await tx.update(scripts).set(values).where(sql`${scripts.id} = ${id}`);
     }
 
     if (removed.length > 0) {

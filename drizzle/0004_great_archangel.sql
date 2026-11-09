@@ -1,0 +1,1 @@
+ALTER TABLE "scripts" ADD COLUMN "note_content" text;

@@ -39,6 +39,12 @@ export const scripts = pgTable(
      * checked, which includes when the note has changed since.
      */
     fidelity: jsonb("fidelity").$type<FidelityReport>(),
+    /**
+     * The note as it was when the script was written, kept so the script can be
+     * read against it. Kept even after the note changes, which is when it is
+     * most useful. Null if the note had already changed by the first sync.
+     */
+    noteContent: text("note_content"),
 
     /** Set when the file disappears from the repo. Rows are never deleted. */
     removedAt: timestamp("removed_at", { withTimezone: true }),

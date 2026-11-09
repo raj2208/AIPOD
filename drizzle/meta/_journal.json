@@ -29,6 +29,13 @@
       "when": 1794222035948,
       "tag": "0003_past_pride",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794222518293,
+      "tag": "0004_great_archangel",
+      "breakpoints": true
     }
   ]
 }
