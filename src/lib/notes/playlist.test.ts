@@ -74,6 +74,16 @@ describe("neighbours", () => {
   });
 
   it("returns nothing for an unknown id", () => {
-    expect(neighbours(ordered, "zzz")).toEqual({ previous: null, next: null });
+    expect(neighbours(ordered, "zzz")).toEqual({
+      previous: null,
+      next: null,
+      position: 0,
+      total: 3,
+    });
+  });
+
+  it("says where the script sits, counting from 1", () => {
+    expect(neighbours(ordered, "a")).toMatchObject({ position: 1, total: 3 });
+    expect(neighbours(ordered, "c")).toMatchObject({ position: 3, total: 3 });
   });
 });

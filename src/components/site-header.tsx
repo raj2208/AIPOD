@@ -1,6 +1,8 @@
 import { Headphones } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
+import { NavLink } from "@/components/nav-link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -17,12 +19,21 @@ export function SiteHeader() {
         </Link>
 
         <nav className="flex items-center gap-1">
-          <Link
-            href="/scripts"
-            className={cn(buttonVariants({ variant: "ghost" }), "h-11 px-3 text-base")}
+          {/* The active state needs the current URL, which is only known at
+              request time, so the link streams in. Until then it is the same
+              link without the highlight, so nothing moves. */}
+          <Suspense
+            fallback={
+              <Link
+                href="/scripts"
+                className={cn(buttonVariants({ variant: "ghost" }), "h-11 px-4 text-base")}
+              >
+                Playlist
+              </Link>
+            }
           >
-            Scripts
-          </Link>
+            <NavLink href="/scripts">Playlist</NavLink>
+          </Suspense>
           <ThemeToggle />
         </nav>
       </div>

@@ -58,15 +58,23 @@ export function orderScripts<T extends Orderable>(
   });
 }
 
-/** The scripts either side of `id` in play order. */
+/**
+ * Where `id` sits in play order: the scripts either side of it, its place
+ * counting from 1, and how many scripts there are. The place is 0 when the id
+ * is not in the list.
+ */
 export function neighbours<T extends { id: string }>(
   ordered: T[],
   id: string,
-): { previous: T | null; next: T | null } {
-  const position = ordered.findIndex((script) => script.id === id);
-  if (position === -1) return { previous: null, next: null };
+): { previous: T | null; next: T | null; position: number; total: number } {
+  const index = ordered.findIndex((script) => script.id === id);
+  if (index === -1) {
+    return { previous: null, next: null, position: 0, total: ordered.length };
+  }
   return {
-    previous: ordered[position - 1] ?? null,
-    next: ordered[position + 1] ?? null,
+    previous: ordered[index - 1] ?? null,
+    next: ordered[index + 1] ?? null,
+    position: index + 1,
+    total: ordered.length,
   };
 }

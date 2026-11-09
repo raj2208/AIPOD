@@ -36,7 +36,7 @@ export function Hero() {
             href="/scripts"
             className={cn(buttonVariants({ size: "lg" }))}
           >
-            Browse scripts
+            Open playlist
             <ArrowRight data-icon="inline-end" />
           </Link>
           <Link
