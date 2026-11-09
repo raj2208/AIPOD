@@ -156,6 +156,30 @@
   }
 }
 
+/* The highlighted word in the home page player preview, moving along. */
+@keyframes hero-word {
+  0%,
+  14% {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+  15%,
+  100% {
+    background-color: transparent;
+    color: inherit;
+  }
+}
+
+.hero-word {
+  animation: hero-word 4.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word {
+    animation: none;
+  }
+}
+
 /* A clear keyboard focus ring for custom links and cards. */
 @utility focus-ring {
   &:focus-visible {

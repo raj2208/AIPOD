@@ -1,5 +1,3 @@
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -14,16 +12,13 @@ import { neighbours } from "@/lib/notes/playlist";
 import { getScript, listScripts } from "@/lib/scripts";
 import { estimateSeconds } from "@/lib/tts/chunks";
 
-function BackToPlaylist() {
-  return (
-    <Link
-      href="/scripts"
-      className="-ml-2 mb-2 inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-ring lg:hidden"
-    >
-      <ArrowLeft className="size-4" />
-      Playlist
-    </Link>
-  );
+export async function generateMetadata({ params }: PageProps<"/scripts/[id]">) {
+  await connection();
+  const { id } = await params;
+  const script = await getScript(id);
+  return {
+    title: script ? `${script.title} | AIPOD` : "Script not found | AIPOD",
+  };
 }
 
 async function ScriptDetail({
@@ -44,8 +39,6 @@ async function ScriptDetail({
       <PlaylistRail scripts={scripts} currentId={script.id} />
 
       <div className="min-w-0">
-        <BackToPlaylist />
-
         <header className="mb-6">
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
             {position > 0 && (
@@ -88,7 +81,6 @@ async function ScriptDetail({
 function ScriptDetailSkeleton() {
   return (
     <>
-      <BackToPlaylist />
       <div className="mb-6 space-y-3">
         <Skeleton className="h-4 w-40" />
         <Skeleton className="h-9 w-2/3" />
