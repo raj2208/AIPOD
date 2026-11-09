@@ -1,3 +1,4 @@
+import { ListMusic } from "lucide-react";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
@@ -5,6 +6,7 @@ import { ContinueListening } from "@/components/continue-listening";
 import { PlayAllButton } from "@/components/play-all-button";
 import { ScriptRow } from "@/components/script-row";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StatePanel } from "@/components/state-panel";
 import { SyncErrors, SyncStatus } from "@/components/sync-panel";
 import type { Script } from "@/db/schema";
 import { formatDuration } from "@/lib/duration";
@@ -31,10 +33,14 @@ function PlaylistSkeleton() {
 
 function EmptyPlaylist() {
   return (
-    <p className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-      Nothing to play yet. Add a script to your notes repo, then run{" "}
-      <code className="rounded bg-muted px-1 py-0.5">pnpm sync</code>.
-    </p>
+    <StatePanel icon={ListMusic} title="Your playlist is empty">
+      <p>Scripts come from your notes repo.</p>
+      <ol className="mt-3 space-y-1 text-left text-sm">
+        <li>1. Run <code className="rounded bg-muted px-1 py-0.5">/script</code> on a note.</li>
+        <li>2. Read the draft, then commit and push.</li>
+        <li>3. Press Sync below.</li>
+      </ol>
+    </StatePanel>
   );
 }
 

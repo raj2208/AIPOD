@@ -1,25 +1,38 @@
 "use client";
 
 import { RefreshCw } from "lucide-react";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 
 import {
   syncNowAction,
   type SyncActionState,
 } from "@/app/scripts/sync-action";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 
 const IDLE: SyncActionState = { status: "idle" };
 
-/**
- * Sits inside a flex row: the button joins the row and the result message
- * drops onto its own line underneath.
- */
+/** Pulls the latest scripts from the notes repo and says how it went. */
 export function SyncButton() {
   const [state, action, pending] = useActionState(syncNowAction, IDLE);
 
+  // The result arrives as a toast, so it is seen wherever you are on the page
+  // and announced to screen readers.
+  useEffect(() => {
+    if (state.status === "done") {
+      toast.add({ type: "success", title: "Synced", description: state.summary });
+    } else if (state.status === "error") {
+      toast.add({
+        type: "error",
+        title: "Could not sync",
+        description: state.message,
+        timeout: 8000,
+      });
+    }
+  }, [state]);
+
   return (
-    <form action={action} className="contents">
+    <form action={action}>
       <Button
         type="submit"
         variant="ghost"
@@ -32,12 +45,6 @@ export function SyncButton() {
         />
         {pending ? "Syncing..." : "Sync now"}
       </Button>
-      <p role="status" className="basis-full text-sm empty:hidden">
-        {state.status === "done" && state.summary}
-        {state.status === "error" && (
-          <span className="text-destructive">{state.message}</span>
-        )}
-      </p>
     </form>
   );
 }

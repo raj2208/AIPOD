@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { Toaster } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
@@ -51,9 +52,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <TooltipProvider>
-          <SiteHeader />
-          <div className="flex-1">{children}</div>
-          <SiteFooter />
+          <Toaster>
+            <SiteHeader />
+            <div className="flex-1">{children}</div>
+            <SiteFooter />
+          </Toaster>
         </TooltipProvider>
       </body>
     </html>

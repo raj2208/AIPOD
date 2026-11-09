@@ -19,17 +19,17 @@ The score is a weighted average of the areas below. Each area is scored out of 1
 
 ## Scores
 
-| Area | Weight | v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7 | v8 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Playlist on a phone | 20% | 3 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 |
-| Player and reading | 25% | 4 | 4 | 7 | 7 | 7 | 8 | 8 | 8 | 9 |
-| Look and feel | 15% | 4 | 4 | 5 | 5 | 8 | 8 | 8 | 8 | 8 |
-| Navigation and hierarchy | 10% | 5 | 5 | 5 | 5 | 5 | 8 | 8 | 8 | 8 |
-| Dark mode | 10% | 2 | 2 | 2 | 7 | 8 | 8 | 8 | 8 | 8 |
-| Touch and accessibility | 10% | 5 | 5 | 6 | 6 | 6 | 6 | 9 | 9 | 9 |
-| States and feedback | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
-| Desktop | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
-| **Overall** | | **4.0** | **5.0** | **6.0** | **6.5** | **7.1** | **7.6** | **7.9** | **8.1** | **8.4** |
+| Area | Weight | v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7 | v8 | v9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Playlist on a phone | 20% | 3 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 | 9 |
+| Player and reading | 25% | 4 | 4 | 7 | 7 | 7 | 8 | 8 | 8 | 9 | 9 |
+| Look and feel | 15% | 4 | 4 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 |
+| Navigation and hierarchy | 10% | 5 | 5 | 5 | 5 | 5 | 8 | 8 | 8 | 8 | 8 |
+| Dark mode | 10% | 2 | 2 | 2 | 7 | 8 | 8 | 8 | 8 | 8 | 8 |
+| Touch and accessibility | 10% | 5 | 5 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 |
+| States and feedback | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 |
+| Desktop | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
+| **Overall** | | **4.0** | **5.0** | **6.0** | **6.5** | **7.1** | **7.6** | **7.9** | **8.1** | **8.4** | **8.5** |
 
 ## v0: problems found
 
@@ -54,3 +54,4 @@ Biggest weighted gap first: the playlist, then the player, then dark mode, then 
 - **v6, accessibility.** Measured with the axe accessibility engine on every page in light and dark, and with the settings sheet, theme menu, and review panel open. It found one real problem, an unlabelled slider, which is fixed; the pages now have no violations. Keyboard use was checked by tabbing through: a "skip to content" link appears first, every tappable row and card shows a clear focus ring, and the player is reachable. Motion is switched off for people who ask for less of it. One standard note remains: the theme menu pop-up sits outside the page landmarks, which is normal for pop-up menus.
 - **v7, playlist actions.** A "Play all" button starts the first script from the top, and every script after it follows on its own. Scripts you have started show a thin progress bar and the time left right in the list, and the list fades in gently.
 - **v8, reading and listening.** Auto-scroll used to drag you back to the current sentence even if you had scrolled ahead on purpose. Now it stops following as soon as you scroll yourself, and a "Jump to current sentence" button appears; it starts following again when you tap it or restart playback. Text size has four settings in the sheet and is remembered. The lock screen and notification now show the app icon as artwork. The play button gives a small press response.
+- **v9, states and feedback.** Every state now has a designed screen instead of plain text: an empty playlist (with the three steps to add a script), a page that does not exist, a script that does not exist, and a page that fails (with a Try again button). They share one look. Syncing now reports its result in a toast, which is seen wherever you are on the page and read out to screen readers, instead of a line of text appearing below a button.
