@@ -16,6 +16,7 @@ import {
   type SynthLike,
   type UtteranceLike,
 } from "./engine";
+import { resumeStore } from "./resume";
 import { PlaybackSession } from "./session";
 import {
   sanitizeProgress,
@@ -83,8 +84,14 @@ export function useSpeechPlayer({
           : null,
       createUtterance: (text) =>
         new SpeechSynthesisUtterance(text) as unknown as UtteranceLike,
-      onIndexChange: (index) => progress.set({ index }),
-      onFinish: () => progress.set({ index: 0 }),
+      onIndexChange: (index) => {
+        progress.set({ index });
+        resumeStore.set({ scriptId, index });
+      },
+      onFinish: () => {
+        progress.set({ index: 0 });
+        resumeStore.set({ scriptId, index: 0 });
+      },
       getStartIndex: () => progress.getSnapshot().index,
     });
     return { engine, progress, session: new PlaybackSession() };

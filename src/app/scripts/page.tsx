@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { Badge } from "@/components/ui/badge";
+import { ContinueListening } from "@/components/continue-listening";
 import { ScriptBadges } from "@/components/script-badges";
 import { SyncPanel } from "@/components/sync-panel";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -90,6 +91,9 @@ async function ScriptsContent() {
 
   return (
     <>
+      <ContinueListening
+        scripts={scripts.map(({ id, title }) => ({ id, title }))}
+      />
       <SyncPanel state={syncState} />
       {scripts.length === 0 ? (
         <p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">

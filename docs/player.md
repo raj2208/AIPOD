@@ -49,7 +49,7 @@ What is built:
 - **Sentence chunks.** Scripts are cut into sentences, and short ones are joined up to 240 characters, never across a paragraph.
 - **Highlighting.** The current chunk is highlighted, and the current word too when the browser reports word positions. The mode can be off, sentence, or word. Tapping a sentence jumps to it.
 - **Controls.** Play and pause, back and forward 15 seconds, a progress slider, voice, speed from 0.75x to 3x, and pitch. Settings are saved in the browser.
-- **Saved position.** Each script remembers where you stopped.
+- **Saved position.** Each script remembers where you stopped, and the scripts list offers a "Continue listening" shortcut back to the last one left part way. Positions are kept in the browser on that device.
 - **Auto-scroll.** The page follows the sentence being read.
 - **Phone integration.** Lock-screen controls (Media Session), an optional screen wake lock, and an optional silent audio loop (see below).
 - **Recovery.** A timer restarts speech that stopped on its own.
