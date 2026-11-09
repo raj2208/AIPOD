@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
+import { FidelityNotice } from "@/components/fidelity-notice";
 import { ScriptBadges } from "@/components/script-badges";
 import { ScriptReader } from "@/components/script-reader";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +33,8 @@ async function ScriptDetail({
           From <code>{script.notePath}</code>
         </p>
       </div>
+
+      <FidelityNotice script={script} />
 
       <ScriptReader
         scriptId={script.id}
