@@ -14,7 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { Script } from "@/db/schema";
+import { formatDuration } from "@/lib/duration";
 import { getSyncState, listScripts } from "@/lib/scripts";
+import { estimateSeconds } from "@/lib/tts/chunks";
 
 export const metadata = { title: "Scripts | AIPOD" };
 
@@ -25,6 +28,56 @@ function ScriptsSkeleton() {
       <Skeleton className="h-9 w-full" />
       <Skeleton className="h-9 w-full" />
     </div>
+  );
+}
+
+function ScriptsTable({ scripts }: { scripts: Script[] }) {
+  const lengths = scripts.map((script) => estimateSeconds(script.content));
+  const totalSeconds = lengths.reduce((sum, seconds) => sum + seconds, 0);
+
+  return (
+    <>
+      <p className="mb-3 text-sm text-muted-foreground">
+        {scripts.length} {scripts.length === 1 ? "script" : "scripts"}, about{" "}
+        {formatDuration(totalSeconds)} at normal speed, played in this order.
+      </p>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-10">#</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead>Topic</TableHead>
+            <TableHead className="text-right">Length</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {scripts.map((script, position) => (
+            <TableRow key={script.id}>
+              <TableCell className="text-muted-foreground">
+                {position + 1}
+              </TableCell>
+              <TableCell>
+                <Link
+                  href={`/scripts/${script.id}`}
+                  className="font-medium hover:underline"
+                >
+                  {script.title}
+                </Link>
+              </TableCell>
+              <TableCell>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Badge variant="secondary">{script.topic}</Badge>
+                  <ScriptBadges script={script} />
+                </div>
+              </TableCell>
+              <TableCell className="text-right text-muted-foreground">
+                {formatDuration(lengths[position])}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
   );
 }
 
@@ -44,40 +97,7 @@ async function ScriptsContent() {
           <code className="rounded bg-muted px-1 py-0.5">pnpm sync</code>.
         </p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Topic</TableHead>
-              <TableHead className="text-right">Updated</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {scripts.map((script) => (
-              <TableRow key={script.id}>
-                <TableCell>
-                  <Link
-                    href={`/scripts/${script.id}`}
-                    className="font-medium hover:underline"
-                  >
-                    {script.title}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <Badge variant="secondary">{script.topic}</Badge>
-                    <ScriptBadges script={script} />
-                  </div>
-                </TableCell>
-                <TableCell className="text-right text-muted-foreground">
-                  {script.updatedAt.toLocaleDateString("en-US", {
-                    dateStyle: "medium",
-                  })}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <ScriptsTable scripts={scripts} />
       )}
     </>
   );
