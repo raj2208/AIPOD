@@ -98,7 +98,7 @@ async function PlaylistContent() {
 
 export default function ScriptsPage() {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 pt-8 pb-16 sm:pt-12">
+    <main id="main" tabIndex={-1} className="mx-auto w-full max-w-2xl px-4 pt-8 pb-16 outline-none sm:pt-12">
       <Suspense fallback={<PlaylistSkeleton />}>
         <PlaylistContent />
       </Suspense>

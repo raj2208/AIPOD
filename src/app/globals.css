@@ -151,3 +151,31 @@
     transform: scaleY(0.7);
   }
 }
+
+/* A clear keyboard focus ring for custom links and cards. */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Same, drawn inside the element, for rows that fill their container. */
+@utility focus-ring-inset {
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+}
+
+/* People who ask for less motion get none: no transitions, no animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

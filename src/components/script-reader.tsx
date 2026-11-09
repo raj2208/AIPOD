@@ -140,7 +140,7 @@ export function ScriptReader({
             <Link
               href={`/scripts/${previous.id}`}
               onClick={() => player.playing && requestAutoplay(previous.id)}
-              className="flex items-center gap-3 rounded-lg border p-3 text-sm hover:bg-muted"
+              className="flex items-center gap-3 rounded-xl border p-3.5 text-sm transition-colors hover:bg-muted focus-ring"
             >
               <ArrowLeft className="size-4 shrink-0 text-muted-foreground" />
               <span className="min-w-0">
@@ -159,7 +159,7 @@ export function ScriptReader({
             <Link
               href={`/scripts/${next.id}`}
               onClick={() => player.playing && requestAutoplay(next.id)}
-              className="flex items-center justify-between gap-3 rounded-lg border p-3 text-sm hover:bg-muted"
+              className="flex items-center justify-between gap-3 rounded-xl border p-3.5 text-sm transition-colors hover:bg-muted focus-ring"
             >
               <span className="min-w-0">
                 <span className="block text-xs text-muted-foreground">

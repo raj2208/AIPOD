@@ -16,7 +16,7 @@ function BackToPlaylist() {
   return (
     <Link
       href="/scripts"
-      className="-ml-2 mb-2 inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+      className="-ml-2 mb-2 inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-ring"
     >
       <ArrowLeft className="size-4" />
       Playlist
@@ -100,7 +100,7 @@ function ScriptDetailSkeleton() {
 
 export default function ScriptPage(props: PageProps<"/scripts/[id]">) {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 pt-4 pb-10">
+    <main id="main" tabIndex={-1} className="mx-auto w-full max-w-2xl px-4 pt-4 pb-10 outline-none">
       <Suspense fallback={<ScriptDetailSkeleton />}>
         <ScriptDetail params={props.params} />
       </Suspense>

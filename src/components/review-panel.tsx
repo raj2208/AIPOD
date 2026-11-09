@@ -55,7 +55,7 @@ export function ReviewPanel({ script }: Props) {
         tone === "neutral" && "bg-card",
       )}
     >
-      <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 py-3 select-none focus-visible:bg-muted/50 focus-visible:outline-none [&::-webkit-details-marker]:hidden">
+      <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 py-3 select-none focus-ring-inset [&::-webkit-details-marker]:hidden">
         <Icon
           aria-hidden
           className={cn(

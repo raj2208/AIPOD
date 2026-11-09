@@ -66,7 +66,7 @@ function SkipButton({
       <Icon className="size-7" strokeWidth={1.6} />
       <span
         aria-hidden
-        className="absolute text-[0.625rem] leading-none font-bold tabular-nums"
+        className="absolute text-[0.6875rem] leading-none font-bold tabular-nums"
       >
         {SKIP_SECONDS}
       </span>

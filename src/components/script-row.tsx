@@ -19,7 +19,7 @@ export function ScriptRow({
     <li>
       <Link
         href={`/scripts/${script.id}`}
-        className="flex min-h-[4.5rem] items-center gap-4 px-4 py-3.5 transition-colors hover:bg-muted/60 active:bg-muted focus-visible:bg-muted focus-visible:outline-none"
+        className="flex min-h-[4.5rem] items-center gap-4 px-4 py-3.5 transition-colors hover:bg-muted/60 active:bg-muted focus-ring-inset"
       >
         <span
           aria-hidden
