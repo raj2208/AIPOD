@@ -12,6 +12,7 @@ export function StatePanel({
   children,
   actions,
   tone = "neutral",
+  level = 2,
   className,
 }: {
   icon: LucideIcon;
@@ -19,8 +20,11 @@ export function StatePanel({
   children?: React.ReactNode;
   actions?: React.ReactNode;
   tone?: "neutral" | "danger";
+  /** Use 1 when the panel is the whole page, and 2 when it sits inside one. */
+  level?: 1 | 2;
   className?: string;
 }) {
+  const Heading = level === 1 ? "h1" : "h2";
   return (
     <div
       className={cn(
@@ -38,9 +42,9 @@ export function StatePanel({
       >
         <Icon aria-hidden className="size-7" />
       </span>
-      <h2 className="text-xl font-semibold tracking-tight text-balance">
+      <Heading className="text-xl font-semibold tracking-tight text-balance">
         {title}
-      </h2>
+      </Heading>
       {children && (
         <div className="mt-2 max-w-sm text-muted-foreground text-balance">
           {children}

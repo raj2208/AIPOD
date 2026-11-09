@@ -19,7 +19,10 @@ export function PlaylistRail({
 }) {
   return (
     <aside aria-label="Playlist" className="hidden lg:block">
-      <nav className="sticky top-20 max-h-[calc(100dvh-11rem)] overflow-y-auto pr-1 pb-4">
+      <nav
+        aria-label="Scripts in the playlist"
+        className="sticky top-20 max-h-[calc(100dvh-11rem)] overflow-y-auto pr-1 pb-4"
+      >
         <h2 className="mb-2 px-3 text-sm font-medium text-muted-foreground">
           Playlist
         </h2>

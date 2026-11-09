@@ -18,7 +18,7 @@ export function SiteHeader() {
           AIPOD
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav aria-label="Main" className="flex items-center gap-1">
           {/* The active state needs the current URL, which is only known at
               request time, so the link streams in. Until then it is the same
               link without the highlight, so nothing moves. */}

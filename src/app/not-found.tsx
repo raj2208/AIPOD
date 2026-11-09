@@ -13,6 +13,7 @@ export default function NotFound() {
       className="mx-auto w-full max-w-2xl px-4 py-16 outline-none"
     >
       <StatePanel
+        level={1}
         icon={Compass}
         title="That page does not exist"
         actions={

@@ -27,6 +27,7 @@ export default function ErrorPage({
       className="mx-auto w-full max-w-2xl px-4 py-16 outline-none"
     >
       <StatePanel
+        level={1}
         icon={TriangleAlert}
         tone="danger"
         title="Something went wrong"
