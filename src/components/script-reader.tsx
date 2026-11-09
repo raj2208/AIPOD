@@ -173,6 +173,9 @@ export function ScriptReader({
         </nav>
       )}
 
+      {/* Room so the last lines can scroll clear of the docked player. */}
+      <div aria-hidden className="h-36" />
+
       <ScriptPlayer player={player} />
     </>
   );

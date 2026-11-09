@@ -27,6 +27,7 @@ export const metadata: Metadata = {
 // Colours the browser bar, and the app's window when it is installed.
 export const viewport: Viewport = {
   themeColor: "#171717",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

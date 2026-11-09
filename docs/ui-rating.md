@@ -19,17 +19,17 @@ The score is a weighted average of the areas below. Each area is scored out of 1
 
 ## Scores
 
-| Area | Weight | v0 | v1 |
-| --- | --- | --- | --- |
-| Playlist on a phone | 20% | 3 | 8 |
-| Player and reading | 25% | 4 | 4 |
-| Look and feel | 15% | 4 | 4 |
-| Navigation and hierarchy | 10% | 5 | 5 |
-| Dark mode | 10% | 2 | 2 |
-| Touch and accessibility | 10% | 5 | 5 |
-| States and feedback | 5% | 6 | 6 |
-| Desktop | 5% | 6 | 6 |
-| **Overall** | | **4.0** | **5.0** |
+| Area | Weight | v0 | v1 | v2 |
+| --- | --- | --- | --- | --- |
+| Playlist on a phone | 20% | 3 | 8 | 8 |
+| Player and reading | 25% | 4 | 4 | 7 |
+| Look and feel | 15% | 4 | 4 | 5 |
+| Navigation and hierarchy | 10% | 5 | 5 | 5 |
+| Dark mode | 10% | 2 | 2 | 2 |
+| Touch and accessibility | 10% | 5 | 5 | 6 |
+| States and feedback | 5% | 6 | 6 | 6 |
+| Desktop | 5% | 6 | 6 | 6 |
+| **Overall** | | **4.0** | **5.0** | **6.0** |
 
 ## v0: problems found
 
@@ -47,3 +47,4 @@ Biggest weighted gap first: the playlist, then the player, then dark mode, then 
 ## Changes by version
 
 - **v1, playlist.** The table became a list of tappable rows: title, then topic, length and any status in small coloured pills. The whole row is the link and nothing is clipped. "Continue listening" is a dark card with a progress bar and time left. Syncing moved to a quiet line under the list. The page is a single readable column on desktop too. Still to do in this area: the page is called "Playlist" but the nav still says "Scripts".
+- **v2, player.** The player is a compact bar docked to the bottom of the screen: a position slider, a 64px play button, 15-second skips with the number written inside, a speed chip that steps through speeds when tapped, and a settings button. The old "Listen" label and the voice dropdown are gone from it. Settings open as a bottom sheet with large controls: speed buttons, voice, pitch, highlight, and the switches. The slider is easier to grab, the bar and header are opaque so text no longer ghosts through, and the reader leaves room so the last lines clear the bar.

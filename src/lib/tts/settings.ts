@@ -23,6 +23,19 @@ export type PlayerSettings = {
 
 export const SPEED_PRESETS = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
+/** Tapping the speed chip steps through these, then back to normal speed. */
+export const SPEED_CYCLE = [1, 1.25, 1.5, 1.75, 2, 2.5, 3, 0.75];
+
+export function nextSpeed(current: number): number {
+  const position = SPEED_CYCLE.indexOf(current);
+  return SPEED_CYCLE[(position + 1) % SPEED_CYCLE.length];
+}
+
+/** "1x", "1.25x", "2x". */
+export function formatSpeed(speed: number): string {
+  return `${Number(speed.toFixed(2))}x`;
+}
+
 export const DEFAULT_SETTINGS: PlayerSettings = {
   voiceName: "",
   rate: 1,
