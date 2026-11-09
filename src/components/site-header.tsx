@@ -1,6 +1,7 @@
 import { Headphones } from "lucide-react";
 import Link from "next/link";
 
+import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -16,9 +17,13 @@ export function SiteHeader() {
         </Link>
 
         <nav className="flex items-center gap-1">
-          <Link href="/scripts" className={cn(buttonVariants({ variant: "ghost" }))}>
+          <Link
+            href="/scripts"
+            className={cn(buttonVariants({ variant: "ghost" }), "h-11 px-3 text-base")}
+          >
             Scripts
           </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
