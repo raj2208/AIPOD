@@ -24,6 +24,8 @@ GitHub repo (markdown notes)
      or pre-generated audio (fallback)
 ```
 
+Where each step runs and where its output is stored is described in [architecture.md](architecture.md).
+
 ## 1. Read notes
 
 The user keeps notes as markdown files in a GitHub repository. AIPOD reads them from there. The notes are never modified by AIPOD.

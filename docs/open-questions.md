@@ -15,8 +15,7 @@ Questions not yet decided. Move an item to the relevant doc once it is settled.
 
 - Does browser text-to-speech keep playing on Raj's Android phone with the screen locked, with and without the background audio setting? This decides web reader versus pre-generated audio. The player is built and ready to test. See [player.md](player.md).
 - Which AI model for the script transform? A text-to-speech provider is only needed if the audio fallback is used.
-- Where do the notes live: in this repo or a separate notes repo?
-- Where do generated scripts live: in the notes repo, in AIPOD's own repo, or in a database?
+- Quota and terms: does running the `/script` skill on the Claude Code subscription stay within its limits for the number of notes?
 - How strict should the fidelity check be?
 - Which tech stack? The builder is familiar with Next.js and Postgres.
 
