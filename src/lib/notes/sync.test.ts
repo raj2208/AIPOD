@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatReport, mapLimit } from "./sync";
+import { formatReport, mapLimit, summarizeReport } from "./sync";
 
 describe("mapLimit", () => {
   it("keeps results in input order", async () => {
@@ -43,5 +43,27 @@ describe("formatReport", () => {
     expect(text).toContain("~ b");
     expect(text).toContain("- c");
     expect(text).toContain("! scripts/x.script.md: bad");
+  });
+});
+
+describe("summarizeReport", () => {
+  const empty = { added: [], updated: [], removed: [], unchanged: 3, errors: [] };
+
+  it("says so when nothing changed", () => {
+    expect(summarizeReport(empty)).toBe("Already up to date.");
+  });
+
+  it("lists only what happened", () => {
+    expect(summarizeReport({ ...empty, added: ["a"], updated: ["b", "c"] })).toBe(
+      "Added 1, updated 2.",
+    );
+  });
+
+  it("counts problem files", () => {
+    const one = { path: "x", message: "bad" };
+    expect(summarizeReport({ ...empty, errors: [one] })).toBe(
+      "Already up to date. 1 file has problems.",
+    );
+    expect(summarizeReport({ ...empty, errors: [one, one] })).toContain("2 files have problems");
   });
 });

@@ -188,6 +188,23 @@ export async function runSync(
   return { ...report, commit };
 }
 
+/** A short sentence for the UI, such as "Added 1 and updated 2." */
+export function summarizeReport(report: SyncReport): string {
+  const parts = [
+    report.added.length && `added ${report.added.length}`,
+    report.updated.length && `updated ${report.updated.length}`,
+    report.removed.length && `removed ${report.removed.length}`,
+  ].filter(Boolean) as string[];
+
+  const summary =
+    parts.length === 0
+      ? "Already up to date."
+      : `${parts.join(", ").replace(/^./, (c) => c.toUpperCase())}.`;
+  return report.errors.length > 0
+    ? `${summary} ${report.errors.length} ${report.errors.length === 1 ? "file has" : "files have"} problems.`
+    : summary;
+}
+
 /** One line per outcome, for the CLI and logs. */
 export function formatReport(result: SyncResult): string {
   const lines = [
