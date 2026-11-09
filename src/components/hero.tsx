@@ -40,10 +40,10 @@ export function Hero() {
             <ArrowRight data-icon="inline-end" />
           </Link>
           <Link
-            href="/scripts/new"
+            href="#how-it-works"
             className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
           >
-            Add a script
+            How it works
           </Link>
         </div>
 

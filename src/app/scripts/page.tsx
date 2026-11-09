@@ -1,10 +1,9 @@
-import { Plus } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { ScriptBadges } from "@/components/script-badges";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -15,7 +14,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { listScripts } from "@/lib/scripts";
-import { cn } from "@/lib/utils";
 
 export const metadata = { title: "Scripts | AIPOD" };
 
@@ -36,7 +34,8 @@ async function ScriptsTable() {
   return (
     scripts.length === 0 ? (
         <p className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
-          No scripts yet. Create your first one.
+          No scripts yet. Add a script to your notes repo, then run{" "}
+          <code className="rounded bg-muted px-1 py-0.5">pnpm sync</code>.
         </p>
       ) : (
         <Table>
@@ -59,7 +58,10 @@ async function ScriptsTable() {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary">{script.topic}</Badge>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <Badge variant="secondary">{script.topic}</Badge>
+                    <ScriptBadges script={script} />
+                  </div>
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
                   {script.updatedAt.toLocaleDateString("en-US", {
@@ -81,13 +83,9 @@ export default function ScriptsPage() {
         <div>
           <h1 className="text-2xl font-semibold">Scripts</h1>
           <p className="text-sm text-muted-foreground">
-            Spoken scripts to revise from.
+            Spoken scripts, loaded from your notes repo.
           </p>
         </div>
-        <Link href="/scripts/new" className={cn(buttonVariants())}>
-          <Plus data-icon="inline-start" />
-          New script
-        </Link>
       </div>
 
       <Suspense fallback={<ScriptsTableSkeleton />}>

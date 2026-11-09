@@ -15,7 +15,7 @@ pnpm install
 createdb aipod
 cp .env.example .env.local   # then set DATABASE_URL
 pnpm db:migrate              # create the tables
-pnpm db:seed                 # add the sample Terraform script
+pnpm sync                    # load scripts from the notes folder
 pnpm dev
 ```
 

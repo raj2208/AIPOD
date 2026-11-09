@@ -15,6 +15,9 @@ export interface NotesSource {
   read(file: RepoFile): Promise<string>;
 }
 
+/** Id of the single `sync_state` row that tracks the notes source. */
+export const SYNC_STATE_ID = "notes";
+
 export type SyncError = { path: string; message: string };
 
 /** What a sync did. Stored after each run so the app can show it. */

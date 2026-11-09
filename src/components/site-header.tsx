@@ -19,9 +19,6 @@ export function SiteHeader() {
           <Link href="/scripts" className={cn(buttonVariants({ variant: "ghost" }))}>
             Scripts
           </Link>
-          <Link href="/scripts/new" className={cn(buttonVariants())}>
-            New script
-          </Link>
         </nav>
       </div>
     </header>

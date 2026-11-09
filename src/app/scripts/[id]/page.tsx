@@ -1,16 +1,14 @@
-import { ArrowLeft, Pencil } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
-import { DeleteScriptButton } from "@/components/delete-script-button";
+import { ScriptBadges } from "@/components/script-badges";
 import { ScriptReader } from "@/components/script-reader";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getScript } from "@/lib/scripts";
-import { cn } from "@/lib/utils";
 
 async function ScriptDetail({
   params,
@@ -24,21 +22,15 @@ async function ScriptDetail({
 
   return (
     <>
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <div className="space-y-2">
+      <div className="mb-6 space-y-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           <Badge variant="secondary">{script.topic}</Badge>
-          <h1 className="text-3xl font-semibold">{script.title}</h1>
+          <ScriptBadges script={script} />
         </div>
-        <div className="flex gap-2">
-          <Link
-            href={`/scripts/${script.id}/edit`}
-            className={cn(buttonVariants({ variant: "outline" }))}
-          >
-            <Pencil data-icon="inline-start" />
-            Edit
-          </Link>
-          <DeleteScriptButton id={script.id} title={script.title} />
-        </div>
+        <h1 className="text-3xl font-semibold">{script.title}</h1>
+        <p className="text-xs text-muted-foreground">
+          From <code>{script.notePath}</code>
+        </p>
       </div>
 
       <ScriptReader

@@ -8,6 +8,13 @@
       "when": 1794052345729,
       "tag": "0000_special_darkhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794221282938,
+      "tag": "0001_smiling_black_knight",
+      "breakpoints": true
     }
   ]
 }
