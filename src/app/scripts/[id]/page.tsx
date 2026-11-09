@@ -4,19 +4,21 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
+import { PlaylistRail } from "@/components/playlist-rail";
 import { ReviewPanel } from "@/components/review-panel";
 import { ScriptReader } from "@/components/script-reader";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration } from "@/lib/duration";
-import { getNeighbours, getScript } from "@/lib/scripts";
+import { neighbours } from "@/lib/notes/playlist";
+import { getScript, listScripts } from "@/lib/scripts";
 import { estimateSeconds } from "@/lib/tts/chunks";
 
 function BackToPlaylist() {
   return (
     <Link
       href="/scripts"
-      className="-ml-2 mb-2 inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-ring"
+      className="-ml-2 mb-2 inline-flex h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-ring lg:hidden"
     >
       <ArrowLeft className="size-4" />
       Playlist
@@ -31,53 +33,55 @@ async function ScriptDetail({
 }) {
   await connection();
   const { id } = await params;
-  const [script, { previous, next, position, total }] = await Promise.all([
-    getScript(id),
-    getNeighbours(id),
-  ]);
+  const [script, scripts] = await Promise.all([getScript(id), listScripts()]);
   if (!script) notFound();
+  const { previous, next, position, total } = neighbours(scripts, id);
 
   const length = formatDuration(estimateSeconds(script.content));
 
   return (
-    <>
-      <BackToPlaylist />
+    <div className="lg:grid lg:grid-cols-[var(--rail)_minmax(0,var(--column))] lg:gap-x-[var(--rail-gap)]">
+      <PlaylistRail scripts={scripts} currentId={script.id} />
 
-      <header className="mb-6">
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
-          {position > 0 && (
-            <>
-              <span>
-                {position} of {total}
-              </span>
-              <span aria-hidden>·</span>
-            </>
-          )}
-          <span>{script.topic}</span>
-          <span aria-hidden>·</span>
-          <span>{length}</span>
-          {script.status === "draft" && (
-            <Badge variant="outline" title="Not marked approved yet">
-              Draft
-            </Badge>
-          )}
-        </p>
-        <h1 className="mt-2 text-3xl leading-tight font-semibold tracking-tight text-balance">
-          {script.title}
-        </h1>
-      </header>
+      <div className="min-w-0">
+        <BackToPlaylist />
 
-      <ReviewPanel script={script} />
+        <header className="mb-6">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+            {position > 0 && (
+              <>
+                <span>
+                  {position} of {total}
+                </span>
+                <span aria-hidden>·</span>
+              </>
+            )}
+            <span>{script.topic}</span>
+            <span aria-hidden>·</span>
+            <span>{length}</span>
+            {script.status === "draft" && (
+              <Badge variant="outline" title="Not marked approved yet">
+                Draft
+              </Badge>
+            )}
+          </p>
+          <h1 className="mt-2 text-3xl leading-tight font-semibold tracking-tight text-balance">
+            {script.title}
+          </h1>
+        </header>
 
-      <ScriptReader
-        scriptId={script.id}
-        title={script.title}
-        topic={script.topic}
-        content={script.content}
-        previous={previous && { id: previous.id, title: previous.title }}
-        next={next && { id: next.id, title: next.title }}
-      />
-    </>
+        <ReviewPanel script={script} />
+
+        <ScriptReader
+          scriptId={script.id}
+          title={script.title}
+          topic={script.topic}
+          content={script.content}
+          previous={previous && { id: previous.id, title: previous.title }}
+          next={next && { id: next.id, title: next.title }}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -100,7 +104,11 @@ function ScriptDetailSkeleton() {
 
 export default function ScriptPage(props: PageProps<"/scripts/[id]">) {
   return (
-    <main id="main" tabIndex={-1} className="mx-auto w-full max-w-2xl px-4 pt-4 pb-10 outline-none">
+    <main
+      id="main"
+      tabIndex={-1}
+      className="mx-auto w-full max-w-2xl px-4 pt-4 pb-10 outline-none lg:max-w-[calc(var(--rail)+var(--rail-gap)+var(--column)+2rem)] lg:pt-8"
+    >
       <Suspense fallback={<ScriptDetailSkeleton />}>
         <ScriptDetail params={props.params} />
       </Suspense>

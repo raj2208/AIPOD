@@ -49,6 +49,10 @@
 }
 
 :root {
+  /* Script page on wide screens: playlist rail, gap, reading column. */
+  --rail: 16rem;
+  --rail-gap: 2.5rem;
+  --column: 42rem;
   --background: oklch(0.985 0.004 275);
   --foreground: oklch(0.21 0.03 275);
   --card: oklch(1 0 0);

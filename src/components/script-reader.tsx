@@ -16,7 +16,7 @@ import { ScriptPlayer } from "@/components/script-player";
 import { requestAutoplay } from "@/lib/tts/autoplay";
 import { buildChunks, splitParagraphs } from "@/lib/tts/chunks";
 import type { HighlightMode, TextSize } from "@/lib/tts/settings";
-import { useSpeechPlayer } from "@/lib/tts/use-speech-player";
+import { SKIP_SECONDS, useSpeechPlayer } from "@/lib/tts/use-speech-player";
 import { cn } from "@/lib/utils";
 
 type Neighbour = { id: string; title: string };
@@ -97,6 +97,39 @@ export function ScriptReader({
     onFinished: next ? openNext : undefined,
     onNext: next ? openNext : undefined,
   });
+
+  // Keyboard shortcuts for a computer: space plays and pauses, the arrow keys
+  // skip, and N opens the next script. Anything that already uses these keys
+  // (a focused button, a slider, a menu, the review panel) is left alone.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+      const target = event.target as Element | null;
+      if (
+        target?.closest?.(
+          "input, textarea, select, button, a, summary, [role='slider'], [role='menu'], [role='dialog'], [contenteditable='true']",
+        )
+      ) {
+        return;
+      }
+      if (event.key === " ") {
+        event.preventDefault();
+        player.toggle();
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        player.skip(-SKIP_SECONDS);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        player.skip(SKIP_SECONDS);
+      } else if (event.key === "n" || event.key === "N") {
+        if (next) openNext();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [player, next, openNext]);
 
   const articleRef = useRef<HTMLElement>(null);
   const { index, playing, started } = player;
