@@ -9,7 +9,7 @@ export type ThemeChoice = "system" | "light" | "dark";
 export const THEME_KEY = "aipod.theme";
 
 /** The colour of the browser bar and the installed app's window. */
-export const THEME_COLORS = { light: "#f9fafd", dark: "#0a0b15" } as const;
+export const THEME_COLORS = { light: "#f4f9f7", dark: "#06181a" } as const;
 
 export function sanitizeTheme(raw: unknown): ThemeChoice {
   return raw === "light" || raw === "dark" || raw === "system" ? raw : "system";

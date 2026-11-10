@@ -7,9 +7,14 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-atkinson);
+  --font-mono: var(--font-plex-mono);
+  --font-heading: var(--font-literata);
+  --font-display: var(--font-literata);
+  --font-reading: var(--font-literata);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-signal-ink: var(--signal-ink);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -53,73 +58,83 @@
   --rail: 16rem;
   --rail-gap: 2.5rem;
   --column: 42rem;
-  --background: oklch(0.985 0.004 275);
-  --foreground: oklch(0.21 0.03 275);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.03 275);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.03 275);
-  --primary: oklch(0.5 0.21 277);
-  --primary-foreground: oklch(0.99 0.005 275);
-  --secondary: oklch(0.955 0.012 275);
-  --secondary-foreground: oklch(0.28 0.04 275);
-  --muted: oklch(0.955 0.01 275);
-  --muted-foreground: oklch(0.5 0.03 275);
-  --accent: oklch(0.945 0.03 277);
-  --accent-foreground: oklch(0.3 0.1 277);
-  --destructive: oklch(0.55 0.22 27);
-  --border: oklch(0.915 0.012 275);
-  --input: oklch(0.9 0.012 275);
-  --ring: oklch(0.6 0.15 277);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.75rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.5 0.21 277);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Paper, blue-black ink, one highlighter. See DESIGN.md for the reasons
+     and the measured contrast of every pair below. */
+  --background: oklch(0.979 0.006 170);
+  --foreground: oklch(0.26 0.035 200);
+  --card: oklch(0.995 0.003 170);
+  --card-foreground: oklch(0.26 0.035 200);
+  --popover: oklch(0.995 0.003 170);
+  --popover-foreground: oklch(0.26 0.035 200);
+  --primary: oklch(0.38 0.075 198);
+  --primary-foreground: oklch(0.985 0.004 170);
+  --secondary: oklch(0.952 0.014 170);
+  --secondary-foreground: oklch(0.26 0.035 200);
+  --muted: oklch(0.952 0.014 170);
+  --muted-foreground: oklch(0.468 0.028 200);
+  --accent: oklch(0.938 0.018 170);
+  --accent-foreground: oklch(0.26 0.035 200);
+  --destructive: oklch(0.5 0.16 32);
+  --border: oklch(0.9 0.012 180);
+  --input: oklch(0.62 0.03 192);
+  --ring: oklch(0.52 0.09 196);
+  /* The highlighter. Only ever behind text: never a bar, chip or button. */
+  --signal: oklch(0.875 0.165 95);
+  --signal-soft: oklch(0.94 0.09 95);
+  --signal-ink: oklch(0.26 0.035 200);
+  --chart-1: oklch(0.38 0.075 198);
+  --chart-2: oklch(0.52 0.09 196);
+  --chart-3: oklch(0.65 0.07 192);
+  --chart-4: oklch(0.78 0.05 188);
+  --chart-5: oklch(0.875 0.165 95);
+  --radius: 0.4rem;
+  --sidebar: oklch(0.995 0.003 170);
+  --sidebar-foreground: oklch(0.26 0.035 200);
+  --sidebar-primary: oklch(0.38 0.075 198);
+  --sidebar-primary-foreground: oklch(0.985 0.004 170);
+  --sidebar-accent: oklch(0.938 0.018 170);
+  --sidebar-accent-foreground: oklch(0.26 0.035 200);
+  --sidebar-border: oklch(0.9 0.012 180);
+  --sidebar-ring: oklch(0.52 0.09 196);
 }
 
 .dark {
   color-scheme: dark;
-  --background: oklch(0.155 0.02 277);
-  --foreground: oklch(0.96 0.01 275);
-  --card: oklch(0.205 0.025 277);
-  --card-foreground: oklch(0.96 0.01 275);
-  --popover: oklch(0.225 0.028 277);
-  --popover-foreground: oklch(0.96 0.01 275);
-  --primary: oklch(0.72 0.15 277);
-  --primary-foreground: oklch(0.17 0.04 277);
-  --secondary: oklch(0.27 0.03 277);
-  --secondary-foreground: oklch(0.96 0.01 275);
-  --muted: oklch(0.255 0.028 277);
-  --muted-foreground: oklch(0.72 0.03 275);
-  --accent: oklch(0.3 0.06 277);
-  --accent-foreground: oklch(0.96 0.01 275);
-  --destructive: oklch(0.7 0.19 22);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 13%);
-  --ring: oklch(0.62 0.15 277);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.72 0.15 277);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* The same room with the lights off. */
+  --background: oklch(0.195 0.025 205);
+  --foreground: oklch(0.95 0.012 170);
+  --card: oklch(0.238 0.028 205);
+  --card-foreground: oklch(0.95 0.012 170);
+  --popover: oklch(0.238 0.028 205);
+  --popover-foreground: oklch(0.95 0.012 170);
+  --primary: oklch(0.74 0.085 192);
+  --primary-foreground: oklch(0.2 0.03 205);
+  --secondary: oklch(0.28 0.03 205);
+  --secondary-foreground: oklch(0.95 0.012 170);
+  --muted: oklch(0.28 0.03 205);
+  --muted-foreground: oklch(0.735 0.025 180);
+  --accent: oklch(0.31 0.033 205);
+  --accent-foreground: oklch(0.95 0.012 170);
+  --destructive: oklch(0.72 0.15 38);
+  --border: oklch(0.33 0.025 200);
+  --input: oklch(0.52 0.035 200);
+  --ring: oklch(0.66 0.08 192);
+  --signal: oklch(0.845 0.16 95);
+  --signal-soft: oklch(0.42 0.08 95);
+  --signal-ink: oklch(0.2 0.03 205);
+  --chart-1: oklch(0.74 0.085 192);
+  --chart-2: oklch(0.66 0.08 192);
+  --chart-3: oklch(0.55 0.06 196);
+  --chart-4: oklch(0.44 0.05 200);
+  --chart-5: oklch(0.845 0.16 95);
+  --sidebar: oklch(0.238 0.028 205);
+  --sidebar-foreground: oklch(0.95 0.012 170);
+  --sidebar-primary: oklch(0.74 0.085 192);
+  --sidebar-primary-foreground: oklch(0.2 0.03 205);
+  --sidebar-accent: oklch(0.31 0.033 205);
+  --sidebar-accent-foreground: oklch(0.95 0.012 170);
+  --sidebar-border: oklch(0.33 0.025 200);
+  --sidebar-ring: oklch(0.66 0.08 192);
 }
 
 @layer base {
@@ -132,7 +147,39 @@
   html {
     @apply font-sans;
   }
+  /* Titles are the names of things you read, so they are set in the reading
+     face. See DESIGN.md, "Typography". */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-literata);
+    letter-spacing: -0.015em;
+  }
 }
+
+/* The highlighter: the app's one signature mark, drawn in exactly two ways.
+   `mark-voice` is the word being spoken now, `mark-passage` the sentence it
+   sits in. Nothing else in the app paints yellow. */
+@utility mark-voice {
+  background-color: var(--signal);
+  color: var(--signal-ink);
+  border-radius: 0.2rem;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding-inline: 0.14em;
+  margin-inline: -0.14em;
+}
+
+@utility mark-passage {
+  background-color: var(--signal-soft);
+  color: inherit;
+  border-radius: 0.2rem;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding-inline: 0.14em;
+  margin-inline: -0.14em;
+}
+
 /* Animated bars in the home page hero. */
 @keyframes wave {
   0%,
@@ -160,8 +207,8 @@
 @keyframes hero-word {
   0%,
   14% {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+    background-color: var(--signal);
+    color: var(--signal-ink);
   }
   15%,
   100% {
