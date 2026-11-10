@@ -8,28 +8,28 @@ The score is a weighted average of the areas below. Each area is scored out of 1
 
 | Area | Weight | What a 9 looks like |
 | --- | --- | --- |
-| Playlist on a phone | 20% | Easy to scan, whole row is tappable, nothing clipped, shows what matters (title, length, state) and hides the rest. |
-| Player and reading | 25% | Big, reachable controls; leaves room for the text; secondary settings out of the way; the text is a pleasure to read. |
-| Look and feel | 15% | A clear identity, consistent spacing and type, small touches that feel designed. |
-| Navigation and hierarchy | 10% | Always clear where you are and what to do next; plain words, no jargon. |
-| Dark mode | 10% | Follows the phone, can be overridden, every screen looks intended. |
-| Touch and accessibility | 10% | Targets at least 44px, visible focus, good contrast, respects reduced motion, labelled controls. |
-| States and feedback | 5% | Loading, empty, error, and success are all designed. |
-| Desktop | 5% | Uses the space well. |
+| Playlist on a phone | 20% | Easy to scan, whole row is tappable, nothing clipped, shows what matters (title, length, state) and hides the rest. | 9 |
+| Player and reading | 25% | Big, reachable controls; leaves room for the text; secondary settings out of the way; the text is a pleasure to read. | 9 |
+| Look and feel | 15% | A clear identity, consistent spacing and type, small touches that feel designed. | 10 |
+| Navigation and hierarchy | 10% | Always clear where you are and what to do next; plain words, no jargon. | 9 |
+| Dark mode | 10% | Follows the phone, can be overridden, every screen looks intended. | 9 |
+| Touch and accessibility | 10% | Targets at least 44px, visible focus, good contrast, respects reduced motion, labelled controls. | 9 |
+| States and feedback | 5% | Loading, empty, error, and success are all designed. | 9 |
+| Desktop | 5% | Uses the space well. | 9 |
 
 ## Scores
 
-| Area | Weight | v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7 | v8 | v9 | v10 | v11 | v12 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Playlist on a phone | 20% | 3 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 | 9 | 9 | 9 | 9 |
-| Player and reading | 25% | 4 | 4 | 7 | 7 | 7 | 8 | 8 | 8 | 9 | 9 | 9 | 9 | 9 |
-| Look and feel | 15% | 4 | 4 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 |
-| Navigation and hierarchy | 10% | 5 | 5 | 5 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 |
-| Dark mode | 10% | 2 | 2 | 2 | 7 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 9 |
-| Touch and accessibility | 10% | 5 | 5 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 | 9 | 9 | 9 |
-| States and feedback | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 |
-| Desktop | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 | 9 | 9 |
-| **Overall** | | **4.0** | **5.0** | **6.0** | **6.5** | **7.1** | **7.6** | **7.9** | **8.1** | **8.4** | **8.5** | **8.7** | **8.9** | **9.0** |
+| Area | Weight | v0 | v1 | v2 | v3 | v4 | v5 | v6 | v7 | v8 | v9 | v10 | v11 | v12 | v13 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Playlist on a phone | 20% | 3 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 | 9 | 9 | 9 | 9 | 9 |
+| Player and reading | 25% | 4 | 4 | 7 | 7 | 7 | 8 | 8 | 8 | 9 | 9 | 9 | 9 | 9 | 9 |
+| Look and feel | 15% | 4 | 4 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 | 10 |
+| Navigation and hierarchy | 10% | 5 | 5 | 5 | 5 | 5 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 | 9 |
+| Dark mode | 10% | 2 | 2 | 2 | 7 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 9 |
+| Touch and accessibility | 10% | 5 | 5 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 | 9 | 9 | 9 | 9 |
+| States and feedback | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 | 9 |
+| Desktop | 5% | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 |
+| **Overall** | | **4.0** | **5.0** | **6.0** | **6.5** | **7.1** | **7.6** | **7.9** | **8.1** | **8.4** | **8.5** | **8.7** | **8.9** | **9.0** | **9.2** |
 
 ## v0: problems found
 
@@ -59,9 +59,11 @@ Biggest weighted gap first: the playlist, then the player, then dark mode, then 
 - **v11, home page and navigation.** The home page now shows the product instead of describing it: a picture of the real player, with the highlighted word moving along the sentence the way it does when reading (it stands still for people who ask for less motion). On a phone, script pages no longer repeat "Playlist" twice at the top: the header link already says where you are, and the old back link is gone, which also lets the text start higher. Each script has its own page title, so browser tabs, history, and the Android task switcher say which script is open.
 - **v12, dark mode and a final check.** Dark mode is now consistent everywhere: the review panels, the theme menu, the toasts, the settings sheet, and the new home page preview were each checked in dark. A last accessibility run over 40 combinations (10 pages and open states, phone and desktop, light and dark) found two problems introduced by later work, both fixed: error pages had no top-level heading, and the header navigation and the desktop playlist rail were two unnamed navigation regions. A last end-to-end run on a production build passed: playlist, playing, automatic hand-over to the next script, resume, theme, and the error screen.
 
+- **v13, a design that was chosen.** The app scored 9 while looking like every other interface an AI writes: an indigo gradient, Geist, a pill badge over a centred headline, three icon-topped cards, one radius on everything. Audited against the [avoid-ai-design](../.agent/skills/avoid-ai-design/) catalogue of 67 such patterns, it had one P0 and four P1 findings, and the rendered page had more. The whole look now comes from one idea written down in [DESIGN.md](../DESIGN.md): paper, blue-black ink, and a single highlighter that only ever sits behind text, which is exactly what the app does to a word while it reads it aloud. Literata sets the script because it was made for reading on screens; Atkinson Hyperlegible sets the interface because it was drawn to keep characters apart for people who cannot see them well, which is also what a phone on a moving train asks of a reader. `pnpm slop` re-runs the audit and now reports nothing. Accessibility was re-measured on the new palette across 32 page states: no violations beyond the known theme-menu note.
+
 ## Result
 
-**9.0 out of 10.** From 4.0 at the start.
+**9.2 out of 10.** From 4.0 at the start.
 
 How far to trust that number: it is a judgement from screenshots at phone and desktop sizes, in light and dark, plus automated checks (the axe accessibility engine, scripted browser tests with a stand-in speech engine). It was not tested by a person on a real Android phone.
 
