@@ -2,4 +2,5 @@
 # Scripts that are not listed come after these, sorted by topic and title.
 - terraform-basics
 - kubernetes-pods
+- kubernetes-services
 - postgres-indexes
