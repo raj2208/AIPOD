@@ -49,20 +49,22 @@ async function CollectionDetail({
         Library
       </Link>
 
-      <header className="mt-2 mb-8 gap-6 sm:grid sm:grid-cols-[14rem_minmax(0,1fr)] sm:items-start">
-        <span className="block overflow-hidden rounded-2xl border bg-muted">
+      {/* On a phone the cover is a thumbnail beside the title: this is a page
+          for listening from, so the scripts should be near the top. */}
+      <header className="mt-2 mb-8 grid grid-cols-[5rem_minmax(0,1fr)] items-start gap-x-4 gap-y-5 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-x-6">
+        <span className="col-start-1 row-start-1 block overflow-hidden rounded-xl border bg-muted sm:row-span-2 sm:rounded-2xl">
           <CollectionCover
             collection={collection}
             className="aspect-3/2 size-full object-cover"
           />
         </span>
 
-        <div className="mt-4 sm:mt-0">
-          <h1 className="text-3xl leading-tight font-semibold text-balance">
+        <div className="col-start-2 row-start-1">
+          <h1 className="text-2xl leading-tight font-semibold text-balance sm:text-3xl">
             {collection.title}
           </h1>
           {collection.description && (
-            <p className="mt-2 max-w-prose text-muted-foreground">
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground sm:text-base">
               {collection.description}
             </p>
           )}
@@ -71,12 +73,13 @@ async function CollectionDetail({
               ? "No scripts in this collection yet."
               : `${scripts.length} ${scripts.length === 1 ? "script" : "scripts"}, about ${formatDuration(seconds)}`}
           </p>
-          {scripts.length > 0 && (
-            <div className="mt-4">
-              <PlayAllButton firstId={scripts[0].id} />
-            </div>
-          )}
         </div>
+
+        {scripts.length > 0 && (
+          <div className="col-span-2 col-start-1 row-start-2 sm:col-span-1 sm:col-start-2">
+            <PlayAllButton firstId={scripts[0].id} />
+          </div>
+        )}
       </header>
 
       {scripts.length > 0 && (

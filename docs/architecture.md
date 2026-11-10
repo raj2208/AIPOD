@@ -14,17 +14,37 @@ Where content lives, how it gets into the app, and what the database is for.
 
 ```
 aipod-notes/
-  notes/                     the user's markdown notes, any structure
+  notes/
+    terraform/               a collection: one card in the library
+      collection.yml         optional title, description, cover, order
+      cover.png              optional cover image
+      basics.md              a note
+    kubernetes/
+      pods.md
   scripts/                   one *.script.md per note, same folder shape
+    terraform/basics.script.md
+    kubernetes/pods.script.md
   playlist.yml               optional play order
   .agent/skills/script/      the /script skill
 ```
 
 A template of this layout lives in `notes-template/` in this repo.
 
+## Collections
+
+**The first folder under `notes/` is a collection**, and the app shows it as a card in the library. Anything nested deeper belongs to the same collection, so `notes/terraform/state/backends.md` is still Terraform. A note kept straight in `notes/` lands in a collection called Unfiled.
+
+A collection needs no configuration: its folder name becomes its title, and the app draws it a cover of its own from that name. `collection.yml` beside the notes can set `title`, `description`, `cover` (an image in the same folder) and `order`.
+
+Collections exist because scripts are in them, never because a folder is: an empty folder is not a card. A collection whose scripts all disappear is marked removed, like a script, and comes back if they do.
+
+Cover images are stored in the database as bytes and served from `/api/covers/<slug>`, with the image's hash in the url so a browser can cache it for good. They must be under 2 MB.
+
 ## Play order
 
-`playlist.yml` at the top of the notes repo lists script ids, first to last. Scripts it does not list come after, sorted by topic and title. The playlist is read like any other file: only when its hash changes. A typo in an id is reported after the next sync. See [player.md](player.md) for how playback uses the order.
+`playlist.yml` at the top of the notes repo lists script ids, first to last. Scripts it does not list come after, sorted by topic and title. The playlist is read like any other file: only when its hash changes. A typo in an id is reported after the next sync.
+
+That one order runs through every collection, and each collection shows the part of it that is its own. Playing therefore moves through a collection and stops at its end, the way chapters do. See [player.md](player.md) for how playback uses the order.
 
 ## Script file format
 
@@ -58,7 +78,8 @@ Only files that changed are written. Every file in a Git repo already has a cont
 4. Parse and validate the changed files. A bad file is reported and skipped; it does not stop the rest.
 5. Upsert the valid ones. The upsert itself only writes when the hash differs, as a second safeguard.
 6. Refresh the stored hash of each script's note, which is what makes a script stale.
-7. Remember the commit that was synced.
+7. File each live script under its collection, and write the collections: their `collection.yml` and cover image are re-read only when those files' hashes change, exactly like everything else.
+8. Remember the commit that was synced.
 
 Renames are matched by the script's `id`, not its path. Syncing never calls an AI model.
 
