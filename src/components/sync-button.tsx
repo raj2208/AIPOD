@@ -6,7 +6,7 @@ import { useActionState, useEffect } from "react";
 import {
   syncNowAction,
   type SyncActionState,
-} from "@/app/scripts/sync-action";
+} from "@/app/library/sync-action";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 

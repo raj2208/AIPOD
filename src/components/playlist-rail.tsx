@@ -6,26 +6,31 @@ import { estimateSeconds } from "@/lib/tts/chunks";
 import { cn } from "@/lib/utils";
 
 /**
- * The playlist beside the script, on screens wide enough to have room. It
- * lets you jump to any script without going back to the list. Hidden on a
- * phone, where the list has its own page.
+ * The rest of the collection beside the script, on screens wide enough to have
+ * room. It lets you jump to any of its scripts without going back. Hidden on a
+ * phone, where the collection has its own page.
  */
 export function PlaylistRail({
   scripts,
   currentId,
+  collection,
 }: {
   scripts: Script[];
   currentId: string;
+  collection: { slug: string; title: string };
 }) {
   return (
-    <aside aria-label="Playlist" className="hidden lg:block">
+    <aside aria-label="This collection" className="hidden lg:block">
       <nav
-        aria-label="Scripts in the playlist"
+        aria-label="Scripts in this collection"
         className="sticky top-20 max-h-[calc(100dvh-11rem)] overflow-y-auto pr-1 pb-4"
       >
-        <h2 className="mb-2 px-3 text-sm font-medium text-muted-foreground">
-          Playlist
-        </h2>
+        <Link
+          href={`/library/${collection.slug}`}
+          className="mb-2 block rounded-sm px-3 font-heading text-sm font-semibold hover:underline focus-ring"
+        >
+          {collection.title}
+        </Link>
         <ol className="space-y-0.5">
           {scripts.map((script, index) => {
             const current = script.id === currentId;

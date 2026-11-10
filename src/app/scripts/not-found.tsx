@@ -18,10 +18,10 @@ export default function ScriptNotFound() {
         title="Script not found"
         actions={
           <Link
-            href="/scripts"
+            href="/library"
             className={cn(buttonVariants(), "h-11 rounded-full px-5 text-base")}
           >
-            Back to playlist
+            Back to the library
           </Link>
         }
       >

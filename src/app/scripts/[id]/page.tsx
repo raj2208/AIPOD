@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -7,9 +8,10 @@ import { ReviewPanel } from "@/components/review-panel";
 import { ScriptReader } from "@/components/script-reader";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getCollection } from "@/lib/collections";
 import { formatDuration } from "@/lib/duration";
 import { neighbours } from "@/lib/notes/playlist";
-import { getScript, listScripts } from "@/lib/scripts";
+import { getScript } from "@/lib/scripts";
 import { estimateSeconds } from "@/lib/tts/chunks";
 
 export async function generateMetadata({ params }: PageProps<"/scripts/[id]">) {
@@ -28,25 +30,42 @@ async function ScriptDetail({
 }) {
   await connection();
   const { id } = await params;
-  const [script, scripts] = await Promise.all([getScript(id), listScripts()]);
+  const script = await getScript(id);
   if (!script) notFound();
+
+  // A script is read inside its collection: what comes next, and what the
+  // rail lists, is the rest of that collection rather than everything.
+  const shelf = await getCollection(script.collection);
+  const scripts = shelf?.scripts.length ? shelf.scripts : [script];
+  const collection = {
+    slug: script.collection,
+    title: shelf?.collection.title ?? script.topic,
+  };
   const { previous, next, position, total } = neighbours(scripts, id);
 
   const length = formatDuration(estimateSeconds(script.content));
 
   return (
     <div className="lg:grid lg:grid-cols-[var(--rail)_minmax(0,var(--column))] lg:gap-x-[var(--rail-gap)]">
-      <PlaylistRail scripts={scripts} currentId={script.id} />
+      <PlaylistRail
+        scripts={scripts}
+        currentId={script.id}
+        collection={collection}
+      />
 
       <div className="min-w-0">
         <header className="mb-6">
           {/* Said as a sentence rather than joined up with middle dots, which
               is template chrome wherever it appears. */}
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+            <Link
+              href={`/library/${collection.slug}`}
+              className="rounded-sm underline-offset-4 hover:underline focus-ring"
+            >
+              {collection.title}
+            </Link>
             <span>
-              {position > 0
-                ? `${position} of ${total} in ${script.topic}, ${length}`
-                : `${script.topic}, ${length}`}
+              {position > 0 ? `${position} of ${total}, ${length}` : length}
             </span>
             {script.status === "draft" && (
               <Badge variant="outline" title="Not marked approved yet">

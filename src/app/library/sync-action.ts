@@ -15,7 +15,9 @@ export type SyncActionState =
 export async function syncNowAction(): Promise<SyncActionState> {
   try {
     const result = await runSync(db, sourceFromEnv());
-    revalidatePath("/scripts");
+    // A sync can change any page: the library, any collection, any script.
+    revalidatePath("/library", "layout");
+    revalidatePath("/scripts", "layout");
     return { status: "done", summary: summarizeReport(result) };
   } catch (error) {
     return {

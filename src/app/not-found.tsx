@@ -18,10 +18,10 @@ export default function NotFound() {
         title="That page does not exist"
         actions={
           <Link
-            href="/scripts"
+            href="/library"
             className={cn(buttonVariants(), "h-11 rounded-full px-5 text-base")}
           >
-            Go to playlist
+            Go to the library
           </Link>
         }
       >

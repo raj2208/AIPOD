@@ -10,7 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description:
       "Turn your own study notes into spoken scripts you can revise from on your commute.",
     // Open on the list of scripts, which is what is wanted on the road.
-    start_url: "/scripts",
+    start_url: "/library",
     scope: "/",
     display: "standalone",
     background_color: "#f4f9f7",

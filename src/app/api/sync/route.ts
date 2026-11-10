@@ -42,7 +42,8 @@ export async function POST(request: Request) {
 
   try {
     const result = await runSync(db, sourceFromEnv());
-    revalidatePath("/scripts");
+    revalidatePath("/library", "layout");
+    revalidatePath("/scripts", "layout");
     return Response.json({ ok: true, summary: summarizeReport(result) });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Sync failed.";

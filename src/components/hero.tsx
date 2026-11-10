@@ -95,10 +95,10 @@ export function Hero() {
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link
-              href="/scripts"
+              href="/library"
               className={cn(buttonVariants({ size: "lg" }), "h-12 px-6 text-base")}
             >
-              Open playlist
+              Open library
             </Link>
             <Link
               href="#note-to-script"

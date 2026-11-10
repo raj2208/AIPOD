@@ -12,11 +12,14 @@ export function ScriptRow({
   position,
   seconds,
   chunks,
+  showTopic = true,
 }: {
   script: Script;
   position: number;
   seconds: number;
   chunks: number;
+  /** Off inside a collection, where every row would say the same thing. */
+  showTopic?: boolean;
 }) {
   return (
     <li>
@@ -36,7 +39,8 @@ export function ScriptRow({
           </span>
           <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
             <span>
-              {script.topic}, {formatDuration(seconds)}
+              {showTopic ? `${script.topic}, ` : ""}
+              {formatDuration(seconds)}
             </span>
             <ScriptBadges script={script} />
           </span>

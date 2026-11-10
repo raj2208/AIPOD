@@ -26,14 +26,14 @@ export function SiteHeader() {
           <Suspense
             fallback={
               <Link
-                href="/scripts"
+                href="/library"
                 className={cn(buttonVariants({ variant: "ghost" }), "h-11 px-4 text-base")}
               >
-                Playlist
+                Library
               </Link>
             }
           >
-            <NavLink href="/scripts">Playlist</NavLink>
+            <NavLink href="/library">Library</NavLink>
           </Suspense>
           <ThemeToggle />
         </nav>
