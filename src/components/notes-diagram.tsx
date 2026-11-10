@@ -15,12 +15,23 @@ type Row = {
 
 const TREE: Row[] = [
   { prefix: "", name: "aipod-notes/" },
+  { prefix: "├─ ", name: "notes/", note: "Everything you wrote." },
   {
-    prefix: "├─ ",
-    name: "notes/",
-    note: "Your markdown, in whatever folders suit you.",
+    prefix: "│  └─ ",
+    name: "terraform/",
+    leaf: "config",
+    note: "A folder here is a collection: one card in your library.",
   },
-  { prefix: "│  └─ ", name: "terraform/" },
+  {
+    prefix: "│     ├─ ",
+    name: "collection.yml",
+    note: "Optional. Its title, description and which image to use.",
+  },
+  {
+    prefix: "│     ├─ ",
+    name: "cover.png",
+    note: "Optional. Without one, a cover is drawn from the name.",
+  },
   {
     prefix: "│     └─ ",
     name: "basics.md",
@@ -42,7 +53,6 @@ const TREE: Row[] = [
   {
     prefix: "└─ ",
     name: "playlist.yml",
-    leaf: "config",
     note: "The order you hear them in.",
   },
 ];
@@ -61,7 +71,8 @@ export function NotesDiagram() {
     >
       <h2 className="max-w-2xl text-3xl font-semibold">Where your notes live</h2>
       <p className="mt-3 max-w-xl text-muted-foreground">
-        In your own git repo, as plain markdown. The app only ever reads it.
+        In your own git repo, as plain markdown. The folders you keep them in
+        are the collections you listen to. The app only ever reads it.
       </p>
 
       <figure className="mt-8">
@@ -70,7 +81,7 @@ export function NotesDiagram() {
           {TREE.map((row) => (
             <li
               key={row.prefix + row.name}
-              className="grid gap-x-8 gap-y-0.5 py-1.5 sm:grid-cols-[minmax(0,17rem)_1fr] sm:items-baseline"
+              className="grid gap-x-8 gap-y-0.5 py-1.5 sm:grid-cols-[minmax(0,19rem)_1fr] sm:items-baseline"
             >
               <code className="font-mono text-sm whitespace-pre">
                 <span aria-hidden className="text-muted-foreground/60">
