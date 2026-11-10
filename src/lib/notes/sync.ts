@@ -3,7 +3,22 @@ import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 import * as schema from "../../db/schema";
 import { checkFidelity, type FidelityReport } from "../fidelity";
-import { scripts, syncState } from "../../db/schema";
+import { collections, scripts, syncState } from "../../db/schema";
+import {
+  folderOf,
+  MAX_COVER_BYTES,
+  coverType,
+  parseCollectionFile,
+  slugify,
+  titleFromFolder,
+  type CollectionMeta,
+} from "./collection-file";
+import {
+  coverNeedsFetch,
+  planCollections,
+  resolveCover,
+  type StoredCollection,
+} from "./collection-plan";
 import {
   claimIds,
   findRemoved,
@@ -69,6 +84,7 @@ export async function runSync(
       sourceHash: scripts.sourceHash,
       noteHash: scripts.noteHash,
       hasFidelity: sql<boolean>`${scripts.fidelity} is not null and ${scripts.noteContent} is not null`,
+      collection: scripts.collection,
       removedAt: scripts.removedAt,
     })
     .from(scripts);
@@ -209,6 +225,112 @@ export async function runSync(
     if (checked) fidelityUpdates.push({ id: row.id, ...checked });
   });
 
+  // ---- Collections: the folders the live scripts sit in.
+  const storedCollections: StoredCollection[] = await db
+    .select({
+      slug: collections.slug,
+      folder: collections.folder,
+      title: collections.title,
+      description: collections.description,
+      position: collections.position,
+      metaHash: collections.metaHash,
+      coverPath: collections.coverPath,
+      coverHash: collections.coverHash,
+      hasCover: sql<boolean>`${collections.coverData} is not null`,
+      removedAt: collections.removedAt,
+    })
+    .from(collections);
+
+  const liveScriptPaths = [
+    ...claimed.accepted.map((item) => item.file.path),
+    ...plan.unchanged
+      .filter((row) => !removedIds.has(row.id))
+      .map((row) => row.scriptPath),
+  ];
+  const collectionPlan = planCollections(files, liveScriptPaths, storedCollections);
+  errors.push(...collectionPlan.errors);
+
+  type CollectionRow = typeof collections.$inferInsert;
+  const collectionRows = await mapLimit(
+    collectionPlan.wanted,
+    FETCH_CONCURRENCY,
+    async ({
+      slug,
+      folder,
+      stored,
+      metaFile,
+      metaUnchanged,
+    }): Promise<{ keepStoredBytes: boolean; row: CollectionRow }> => {
+      // collection.yml is re-read only when its hash differs, like every
+      // other file. Unchanged means what is already stored still stands.
+      let meta: CollectionMeta | null = null;
+      if (!metaUnchanged) {
+        meta = {};
+        if (metaFile) {
+          try {
+            const result = parseCollectionFile(await source.read(metaFile));
+            if (result.ok) meta = result.meta;
+            else errors.push({ path: metaFile.path, message: result.error });
+          } catch (error) {
+            const reason = error instanceof Error ? error.message : String(error);
+            errors.push({ path: metaFile.path, message: `Could not read the file: ${reason}` });
+          }
+        }
+      }
+
+      const cover = resolveCover(files, folder, meta, stored);
+      let bytes: Uint8Array | null = null;
+      if (cover.file && coverNeedsFetch(cover.file, stored)) {
+        try {
+          const data = await source.readBytes(cover.file);
+          if (data.byteLength > MAX_COVER_BYTES) {
+            errors.push({
+              path: cover.file.path,
+              message: `The cover is ${Math.round(data.byteLength / 1024)} KB. Covers must be under ${MAX_COVER_BYTES / 1024 / 1024} MB.`,
+            });
+          } else {
+            bytes = data;
+          }
+        } catch (error) {
+          const reason = error instanceof Error ? error.message : String(error);
+          errors.push({ path: cover.file.path, message: `Could not read the image: ${reason}` });
+        }
+      }
+
+      // Three outcomes for the image: new bytes, keep the stored bytes, or
+      // no cover at all (there is none, or reading it failed).
+      const keepStoredBytes =
+        bytes === null &&
+        cover.file !== null &&
+        stored?.hasCover === true &&
+        cover.file.sha === stored.coverHash;
+      const hasCover = bytes !== null || keepStoredBytes;
+
+      return {
+        keepStoredBytes,
+        row: {
+          slug,
+          folder,
+          title:
+            (meta?.title ?? (metaUnchanged ? stored?.title : null)) ||
+            titleFromFolder(folder),
+          description: meta
+            ? (meta.description ?? null)
+            : (stored?.description ?? null),
+          position: meta ? (meta.order ?? null) : (stored?.position ?? null),
+          metaPath: metaFile?.path ?? null,
+          metaHash: metaFile?.sha ?? null,
+          coverPath: cover.path,
+          coverHash: hasCover ? (cover.file?.sha ?? null) : null,
+          coverType: hasCover ? coverType(cover.path ?? "") : null,
+          coverData: bytes ? Buffer.from(bytes) : null,
+          removedAt: null,
+          updatedAt: now,
+        } satisfies CollectionRow,
+      };
+    },
+  );
+
   const report: SyncReport = {
     added,
     updated,
@@ -237,6 +359,7 @@ export async function runSync(
             skillVersion: script.skill_version ?? null,
             fidelity: checkedById.get(script.id)?.fidelity ?? null,
             noteContent: checkedById.get(script.id)?.noteContent ?? null,
+            collection: slugify(folderOf(file.path)),
             updatedAt: now,
           })),
         )
@@ -256,6 +379,7 @@ export async function runSync(
             skillVersion: sql`excluded.skill_version`,
             fidelity: sql`excluded.fidelity`,
             noteContent: sql`excluded.note_content`,
+            collection: sql`excluded.collection`,
             removedAt: null,
             updatedAt: now,
           },
@@ -281,11 +405,71 @@ export async function runSync(
       await tx.update(scripts).set(values).where(sql`${scripts.id} = ${id}`);
     }
 
+    // Scripts that only moved folder keep everything else they had.
+    for (const { id, collection } of plan.collectionUpdates) {
+      await tx
+        .update(scripts)
+        .set({ collection })
+        .where(sql`${scripts.id} = ${id}`);
+    }
+
     if (removed.length > 0) {
       await tx
         .update(scripts)
         .set({ removedAt: now })
         .where(inArray(scripts.id, removed));
+    }
+
+    // Collections are written in two groups: those whose cover bytes are new
+    // or gone, and those whose image has not changed, where the stored bytes
+    // must be left exactly as they are.
+    const COLLECTION_FIELDS = {
+      folder: sql`excluded.folder`,
+      title: sql`excluded.title`,
+      description: sql`excluded.description`,
+      position: sql`excluded.position`,
+      metaPath: sql`excluded.meta_path`,
+      metaHash: sql`excluded.meta_hash`,
+      coverPath: sql`excluded.cover_path`,
+      removedAt: null,
+      updatedAt: now,
+    };
+    for (const keepStoredBytes of [false, true]) {
+      const group = collectionRows
+        .filter((item) => item.keepStoredBytes === keepStoredBytes)
+        .map((item) => item.row);
+      if (group.length === 0) continue;
+      await tx
+        .insert(collections)
+        .values(group)
+        .onConflictDoUpdate({
+          target: collections.slug,
+          set: keepStoredBytes
+            ? COLLECTION_FIELDS
+            : {
+                ...COLLECTION_FIELDS,
+                coverHash: sql`excluded.cover_hash`,
+                coverType: sql`excluded.cover_type`,
+                coverData: sql`excluded.cover_data`,
+              },
+          // As with scripts: a row that has not actually changed is not
+          // rewritten, so updated_at means something.
+          setWhere: sql`${collections.folder} is distinct from excluded.folder
+            or ${collections.title} is distinct from excluded.title
+            or ${collections.description} is distinct from excluded.description
+            or ${collections.position} is distinct from excluded.position
+            or ${collections.metaHash} is distinct from excluded.meta_hash
+            or ${collections.coverPath} is distinct from excluded.cover_path
+            or ${collections.coverHash} is distinct from excluded.cover_hash
+            or ${collections.removedAt} is not null`,
+        });
+    }
+
+    if (collectionPlan.removed.length > 0) {
+      await tx
+        .update(collections)
+        .set({ removedAt: now })
+        .where(inArray(collections.slug, collectionPlan.removed));
     }
 
     await tx

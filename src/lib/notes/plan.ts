@@ -1,3 +1,4 @@
+import { folderOf, slugify } from "./collection-file";
 import type { ParsedScript } from "./script-file";
 import { isScriptPath } from "./script-file";
 import type { RepoFile, SyncError } from "./types";
@@ -14,6 +15,8 @@ export type StoredScript = {
   noteHash: string | null;
   /** Whether a fidelity report is stored for this script. */
   hasFidelity: boolean;
+  /** The collection it was last filed under. */
+  collection: string;
   removedAt: Date | null;
 };
 
@@ -32,6 +35,8 @@ export type SyncPlan = {
   fidelityToCompute: { row: StoredScript; noteHash: string }[];
   /** Up-to-date scripts whose note changed, so an old report no longer applies. */
   fidelityToClear: string[];
+  /** Up-to-date scripts that have moved to another collection. */
+  collectionUpdates: { id: string; collection: string }[];
 };
 
 export function indexByPath(files: RepoFile[]): Map<string, string> {
@@ -72,7 +77,20 @@ export function planSync(files: RepoFile[], stored: StoredScript[]): SyncPlan {
     if (!fresh && row.hasFidelity) fidelityToClear.push(row.id);
   }
 
-  return { toFetch, unchanged, noteHashUpdates, fidelityToCompute, fidelityToClear };
+  // A script's collection comes from its path, so only a move changes it.
+  const collectionUpdates = unchanged.flatMap((row) => {
+    const collection = slugify(folderOf(row.scriptPath));
+    return collection === row.collection ? [] : [{ id: row.id, collection }];
+  });
+
+  return {
+    toFetch,
+    unchanged,
+    noteHashUpdates,
+    fidelityToCompute,
+    fidelityToClear,
+    collectionUpdates,
+  };
 }
 
 export type ParsedFile = { file: RepoFile; script: ParsedScript };

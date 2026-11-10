@@ -1,6 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative, resolve, sep } from "node:path";
 
+import { isCollectionMetaPath, isCoverPath } from "./collection-file";
 import { gitBlobSha } from "./git-hash";
 import { PLAYLIST_PATH } from "./playlist";
 import type { NotesListing, NotesSource, RepoFile } from "./types";
@@ -8,14 +9,17 @@ import type { NotesListing, NotesSource, RepoFile } from "./types";
 const IGNORED_SEGMENT = /^(\..*|node_modules)$/;
 
 /**
- * Markdown files outside hidden folders (.git, .agent, ...) and node_modules,
- * plus the playlist at the top of the repo.
+ * What a sync looks at: markdown notes and scripts, the playlist, each
+ * collection's settings, and the images that can be their covers. Hidden
+ * folders (.git, .agent, ...) and node_modules are skipped.
  */
-function isNoteFile(path: string): boolean {
+function isWantedFile(path: string): boolean {
   if (path === PLAYLIST_PATH) return true;
+  if (path.split("/").some((segment) => IGNORED_SEGMENT.test(segment))) {
+    return false;
+  }
   return (
-    path.endsWith(".md") &&
-    !path.split("/").some((segment) => IGNORED_SEGMENT.test(segment))
+    path.endsWith(".md") || isCollectionMetaPath(path) || isCoverPath(path)
   );
 }
 
@@ -34,7 +38,7 @@ export function createLocalSource(dir: string): NotesSource {
 
       const paths = entries
         .map((entry) => entry.split(sep).join("/"))
-        .filter(isNoteFile)
+        .filter(isWantedFile)
         .sort();
 
       const files: RepoFile[] = await Promise.all(
@@ -47,14 +51,22 @@ export function createLocalSource(dir: string): NotesSource {
     },
 
     async read(file) {
-      const full = resolve(root, file.path);
-      // Never read outside the notes folder, whatever the path says.
-      if (relative(root, full).startsWith("..")) {
-        throw new Error(`Path escapes the notes folder: ${file.path}`);
-      }
-      return readFile(full, "utf8");
+      return readFile(safePath(root, file.path), "utf8");
+    },
+
+    async readBytes(file) {
+      return readFile(safePath(root, file.path));
     },
   };
+}
+
+/** Resolves a repo path, refusing anything that points outside the folder. */
+function safePath(root: string, path: string): string {
+  const full = resolve(root, path);
+  if (relative(root, full).startsWith("..")) {
+    throw new Error(`Path escapes the notes folder: ${path}`);
+  }
+  return full;
 }
 
 export type GitHubSourceOptions = {
@@ -124,20 +136,29 @@ export function createGitHubSource(options: GitHubSourceOptions): NotesSource {
       }
 
       const files = tree.tree
-        .filter((entry) => entry.type === "blob" && isNoteFile(entry.path))
+        .filter((entry) => entry.type === "blob" && isWantedFile(entry.path))
         .map(({ path, sha }) => ({ path, sha }))
         .sort((a, b) => a.path.localeCompare(b.path));
       return { files, commit };
     },
 
     async read(file) {
-      const response = await request(
-        `${base}/git/blobs/${file.sha}`,
-        "application/vnd.github.raw+json",
-      );
+      const response = await blob(file);
       return response.text();
     },
+
+    async readBytes(file) {
+      const response = await blob(file);
+      return new Uint8Array(await response.arrayBuffer());
+    },
   };
+
+  function blob(file: RepoFile) {
+    return request(
+      `${base}/git/blobs/${file.sha}`,
+      "application/vnd.github.raw+json",
+    );
+  }
 }
 
 /** Picks a source from environment variables. See docs/architecture.md. */

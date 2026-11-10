@@ -1,9 +1,61 @@
-import { index, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  customType,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 import type { FidelityReport } from "@/lib/fidelity";
 import type { SyncReport } from "@/lib/notes/types";
 
 export type ScriptStatus = "draft" | "approved";
+
+/** Raw bytes. Used for cover images, which are small and come from the repo. */
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType: () => "bytea",
+});
+
+/**
+ * A folder directly inside `notes/`: one card in the library, holding the
+ * scripts written from the notes under it. Like everything else here it is a
+ * cache of the repo and can be rebuilt by a sync.
+ */
+export const collections = pgTable("collections", {
+  /** Url-safe id made from the folder name. */
+  slug: text("slug").primaryKey(),
+  /** The folder's name in the repo, which is how its files are found. */
+  folder: text("folder").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  /** `order` from collection.yml. Collections without one come after. */
+  position: integer("position"),
+
+  /** collection.yml, when there is one, and its hash for change detection. */
+  metaPath: text("meta_path"),
+  metaHash: text("meta_hash"),
+
+  /** The cover image, held here so the app never reaches back to the repo. */
+  coverPath: text("cover_path"),
+  coverHash: text("cover_hash"),
+  coverType: text("cover_type"),
+  coverData: bytea("cover_data"),
+
+  /** Set when the collection has no scripts left. Rows are never deleted. */
+  removedAt: timestamp("removed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export type Collection = typeof collections.$inferSelect;
+/** A collection without its cover bytes, which no page needs in its payload. */
+export type CollectionSummary = Omit<Collection, "coverData">;
 
 /**
  * A cache of the scripts in the notes repo. Git owns the content, so every
@@ -19,6 +71,9 @@ export const scripts = pgTable(
     /** The spoken text. */
     content: text("content").notNull(),
     status: text("status").$type<ScriptStatus>().notNull().default("draft"),
+
+    /** The collection this belongs to: the first folder of its path. */
+    collection: text("collection").notNull().default("unfiled"),
 
     /** Where the script file is, and its git hash. Drives change detection. */
     scriptPath: text("script_path").notNull(),
@@ -56,7 +111,10 @@ export const scripts = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [index("scripts_script_path_idx").on(table.scriptPath)],
+  (table) => [
+    index("scripts_script_path_idx").on(table.scriptPath),
+    index("scripts_collection_idx").on(table.collection),
+  ],
 );
 
 export type Script = typeof scripts.$inferSelect;

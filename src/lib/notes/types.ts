@@ -9,10 +9,15 @@ export type NotesListing = {
 
 /** Where notes and scripts are read from: a local folder or a GitHub repo. */
 export interface NotesSource {
-  /** Every markdown file and the playlist, with hashes. Reads no file contents. */
+  /**
+   * Every file the sync cares about, with hashes: markdown, the playlist,
+   * collection settings and cover images. Reads no file contents.
+   */
   list(): Promise<NotesListing>;
   /** The full text of one file from the listing. */
   read(file: RepoFile): Promise<string>;
+  /** The bytes of one file from the listing. Used for cover images. */
+  readBytes(file: RepoFile): Promise<Uint8Array>;
 }
 
 /** Id of the single `sync_state` row that tracks the notes source. */

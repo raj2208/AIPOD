@@ -21,6 +21,7 @@ function stored(overrides: Partial<StoredScript> = {}): StoredScript {
     sourceHash: "n1",
     noteHash: "n1",
     hasFidelity: true,
+    collection: "unfiled",
     removedAt: null,
     ...overrides,
   };
@@ -32,6 +33,34 @@ function parsed(path: string, id: string): ParsedFile {
     script: { id, content: "text" } as ParsedScript,
   };
 }
+
+describe("planSync collections", () => {
+  it("leaves a script that has not moved alone", () => {
+    const plan = planSync(
+      [file("scripts/terraform/a.script.md", "h1")],
+      [
+        stored({
+          scriptPath: "scripts/terraform/a.script.md",
+          collection: "terraform",
+        }),
+      ],
+    );
+    expect(plan.collectionUpdates).toEqual([]);
+  });
+
+  it("refiles a script that moved to another folder", () => {
+    const plan = planSync(
+      [file("scripts/kubernetes/a.script.md", "h1")],
+      [
+        stored({
+          scriptPath: "scripts/kubernetes/a.script.md",
+          collection: "terraform",
+        }),
+      ],
+    );
+    expect(plan.collectionUpdates).toEqual([{ id: "a", collection: "kubernetes" }]);
+  });
+});
 
 describe("planSync", () => {
   it("skips scripts whose hash is unchanged", () => {
