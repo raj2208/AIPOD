@@ -1,0 +1,6 @@
+# Optional. Describes the collection this folder is, as shown on its card.
+# Every field is optional: without this file the folder's name is used.
+title: Terraform
+description: Infrastructure as code, from the first apply to state, drift and modules.
+cover: cover.png
+order: 1

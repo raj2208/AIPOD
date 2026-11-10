@@ -1,3 +1,5 @@
 # The order scripts are played in. List script ids, first to last.
 # Scripts that are not listed come after these, sorted by topic and title.
 - terraform-basics
+- kubernetes-pods
+- postgres-indexes
