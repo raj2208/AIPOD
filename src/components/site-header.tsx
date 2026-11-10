@@ -1,7 +1,7 @@
-import { Headphones } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
+import { BrandMark } from "@/components/brand-mark";
 import { NavLink } from "@/components/nav-link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
@@ -11,10 +11,11 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Headphones className="size-4" />
-          </span>
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 rounded-[0.2rem] font-heading text-lg font-semibold focus-ring"
+        >
+          <BrandMark className="size-6 shrink-0" />
           AIPOD
         </Link>
 

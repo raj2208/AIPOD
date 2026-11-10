@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     // Generated shadcn/ui code. Re-added by `shadcn add`, so not linted.
     "src/components/ui/**",
     "src/hooks/use-mobile.ts",
+    // Vendored third-party skills. Updated by copying upstream, not by us.
+    ".agent/skills/**",
   ]),
 ]);
 

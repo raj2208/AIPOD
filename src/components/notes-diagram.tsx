@@ -59,29 +59,18 @@ export function NotesDiagram() {
       id="your-notes"
       className="mx-auto w-full max-w-5xl scroll-mt-14 px-4 py-16"
     >
-      <h2 className="text-2xl font-semibold tracking-tight">
-        Where your notes live
-      </h2>
-      <p className="mt-2 max-w-xl text-muted-foreground">
+      <h2 className="max-w-2xl text-3xl font-semibold">Where your notes live</h2>
+      <p className="mt-3 max-w-xl text-muted-foreground">
         In your own git repo, as plain markdown. The app only ever reads it.
       </p>
 
       <figure className="mt-8">
-        <div className="overflow-hidden rounded-2xl border bg-card">
-        <div className="flex items-center justify-between gap-4 border-b bg-muted/40 px-4 py-2.5">
-          <span className="font-mono text-xs text-muted-foreground">
-            your notes repo
-          </span>
-          <span className="text-xs text-muted-foreground">
-            markdown and one yaml file
-          </span>
-        </div>
-
-        <ul className="divide-y">
+        <div className="overflow-hidden rounded-[0.72rem] border bg-card px-4 py-5 sm:px-6">
+        <ul>
           {TREE.map((row) => (
             <li
               key={row.prefix + row.name}
-              className="grid gap-x-6 gap-y-1 px-4 py-2.5 sm:grid-cols-[minmax(0,20rem)_1fr] sm:items-baseline"
+              className="grid gap-x-8 gap-y-0.5 py-1.5 sm:grid-cols-[minmax(0,17rem)_1fr] sm:items-baseline"
             >
               <code className="font-mono text-sm whitespace-pre">
                 <span aria-hidden className="text-muted-foreground/60">
@@ -98,7 +87,9 @@ export function NotesDiagram() {
                 </span>
               </code>
               {row.note ? (
-                <span className="text-sm text-muted-foreground">
+                // On a phone the note sits under its row, indented so the
+                // tree's own shape still reads down the left edge.
+                <span className="pl-6 text-xs text-muted-foreground sm:pl-0 sm:text-sm">
                   {row.note}
                 </span>
               ) : null}
