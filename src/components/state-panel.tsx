@@ -32,16 +32,16 @@ export function StatePanel({
         className,
       )}
     >
-      <span
+      {/* The icon stands on its own. A tinted rounded square behind it is the
+          stock "feature icon" treatment and says nothing. */}
+      <Icon
+        aria-hidden
+        strokeWidth={1.5}
         className={cn(
-          "mb-4 flex size-14 items-center justify-center rounded-2xl",
-          tone === "danger"
-            ? "bg-destructive/10 text-destructive"
-            : "bg-accent text-accent-foreground",
+          "mb-4 size-8",
+          tone === "danger" ? "text-destructive" : "text-muted-foreground",
         )}
-      >
-        <Icon aria-hidden className="size-7" />
-      </span>
+      />
       <Heading className="text-xl font-semibold tracking-tight text-balance">
         {title}
       </Heading>

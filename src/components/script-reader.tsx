@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, LocateFixed } from "lucide-react";
+import { ChevronLeft, ChevronRight, LocateFixed } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -51,15 +51,15 @@ function ChunkText({
 }) {
   if (!active || mode === "off") return <>{text}</>;
 
+  // The highlighter: the sentence under the soft marker, the word being
+  // spoken under the full one. See DESIGN.md, "Colors".
   const word = mode === "word" ? wordRange : null;
   return (
-    <span className="rounded bg-primary/10 box-decoration-clone dark:bg-primary/20">
+    <span className="mark-passage">
       {word ? (
         <>
           {text.slice(0, word.start)}
-          <mark className="rounded bg-primary text-primary-foreground">
-            {text.slice(word.start, word.end)}
-          </mark>
+          <mark className="mark-voice">{text.slice(word.start, word.end)}</mark>
           {text.slice(word.end)}
         </>
       ) : (
@@ -179,7 +179,9 @@ export function ScriptReader({
       <article
         ref={articleRef}
         className={cn(
-          "space-y-5 leading-relaxed text-pretty",
+          // The script is the thing you came to read, so it is set in the
+          // reading face at a reading measure.
+          "space-y-5 font-reading leading-[1.75] text-pretty",
           TEXT_SIZE_CLASS[textSize],
         )}
       >
@@ -224,7 +226,7 @@ export function ScriptReader({
               onClick={() => player.playing && requestAutoplay(previous.id)}
               className="flex items-center gap-3 rounded-xl border p-3.5 text-sm transition-colors hover:bg-muted focus-ring"
             >
-              <ArrowLeft className="size-4 shrink-0 text-muted-foreground" />
+              <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
               <span className="min-w-0">
                 <span className="block text-xs text-muted-foreground">
                   Previous
@@ -249,7 +251,7 @@ export function ScriptReader({
                 </span>
                 <span className="block truncate font-medium">{next.title}</span>
               </span>
-              <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+              <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
             </Link>
           )}
         </nav>

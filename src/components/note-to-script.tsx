@@ -4,7 +4,7 @@
  * drawn alike on purpose. The left is a file; the right is something to read.
  *
  * The mono type here is on real file paths and real markdown, which is what
- * mono is for. avoid-ai-design-ignore-file: SD4m
+ * mono is for, and it is set at body size rather than shrunk into a label.
  */
 
 const NOTE_LINES = [
@@ -39,12 +39,12 @@ export function NoteToScript() {
         Bullet points do not survive being read aloud. Everything in them does.
       </p>
 
-      <div className="mt-10 grid items-start gap-8 lg:grid-cols-[19rem_minmax(0,1fr)] lg:gap-12">
+      <div className="mt-10 grid items-start gap-8 lg:grid-cols-[21rem_minmax(0,1fr)] lg:gap-12">
         <figure>
-          <figcaption className="font-mono text-xs text-muted-foreground">
+          <figcaption className="font-mono text-sm text-muted-foreground">
             notes/terraform/basics.md
           </figcaption>
-          <pre className="mt-2 overflow-x-auto rounded-[0.72rem] border bg-muted/50 p-4 font-mono text-xs leading-relaxed text-muted-foreground">
+          <pre className="mt-2 overflow-x-auto rounded-2xl border bg-muted/50 p-4 font-mono text-sm leading-relaxed text-muted-foreground">
             {NOTE_LINES.join("\n")}
           </pre>
           <p className="mt-3 text-sm text-muted-foreground">
@@ -53,7 +53,7 @@ export function NoteToScript() {
         </figure>
 
         <figure>
-          <figcaption className="font-mono text-xs text-muted-foreground">
+          <figcaption className="font-mono text-sm text-muted-foreground">
             scripts/terraform/basics.script.md
           </figcaption>
           <blockquote className="mt-2 font-reading text-lg leading-relaxed">

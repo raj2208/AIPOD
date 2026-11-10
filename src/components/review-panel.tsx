@@ -125,16 +125,16 @@ export function ReviewPanel({ script }: Props) {
 
         {hasNote && (
           <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">
+            <p className="mb-2 text-sm text-muted-foreground">
               {stale
-                ? "Your note as it was when this script was written"
-                : "Your note"}{" "}
-              · <code>{script.notePath}</code>
+                ? "Your note as it was when this script was written, from "
+                : "Your note, from "}
+              <code className="font-mono">{script.notePath}</code>
             </p>
             <pre
               tabIndex={0}
               aria-label={`Text of ${script.notePath}`}
-              className="max-h-80 overflow-auto rounded-lg border bg-background px-3 py-3 font-mono text-xs leading-relaxed whitespace-pre-wrap"
+              className="max-h-80 overflow-auto rounded-lg border bg-background px-3 py-3 font-mono text-sm leading-relaxed whitespace-pre-wrap"
             >
               {script.noteContent}
             </pre>

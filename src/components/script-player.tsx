@@ -328,7 +328,7 @@ export function ScriptPlayer({ player }: { player: SpeechPlayer }) {
       aria-label="Listen to this script"
       className="fixed inset-x-0 bottom-0 z-30 border-t bg-background pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-12px_rgb(0_0_0/0.15)]"
     >
-      <div className="mx-auto w-full max-w-2xl px-4 pt-1.5 pb-2 lg:max-w-[calc(var(--rail)+var(--rail-gap)+var(--column)+2rem)] lg:pl-[calc(1rem+var(--rail)+var(--rail-gap))]">
+      <div className="mx-auto w-full max-w-2xl px-4 pt-1.5 pb-2 lg:max-w-5xl lg:pl-[calc(1rem+var(--rail)+var(--rail-gap))]">
         {!supported && (
           <p className="py-2 text-sm text-destructive">
             This browser can&apos;t read text aloud. Try Chrome on Android or

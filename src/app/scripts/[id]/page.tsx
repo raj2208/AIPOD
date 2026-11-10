@@ -40,18 +40,14 @@ async function ScriptDetail({
 
       <div className="min-w-0">
         <header className="mb-6">
+          {/* Said as a sentence rather than joined up with middle dots, which
+              is template chrome wherever it appears. */}
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
-            {position > 0 && (
-              <>
-                <span>
-                  {position} of {total}
-                </span>
-                <span aria-hidden>·</span>
-              </>
-            )}
-            <span>{script.topic}</span>
-            <span aria-hidden>·</span>
-            <span>{length}</span>
+            <span>
+              {position > 0
+                ? `${position} of ${total} in ${script.topic}, ${length}`
+                : `${script.topic}, ${length}`}
+            </span>
             {script.status === "draft" && (
               <Badge variant="outline" title="Not marked approved yet">
                 Draft
@@ -99,7 +95,7 @@ export default function ScriptPage(props: PageProps<"/scripts/[id]">) {
     <main
       id="main"
       tabIndex={-1}
-      className="mx-auto w-full max-w-2xl px-4 pt-4 pb-10 outline-none lg:max-w-[calc(var(--rail)+var(--rail-gap)+var(--column)+2rem)] lg:pt-8"
+      className="mx-auto w-full max-w-2xl px-4 pt-4 pb-10 outline-none lg:max-w-5xl lg:pt-8"
     >
       <Suspense fallback={<ScriptDetailSkeleton />}>
         <ScriptDetail params={props.params} />

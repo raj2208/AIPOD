@@ -65,7 +65,7 @@ export function NotesDiagram() {
       </p>
 
       <figure className="mt-8">
-        <div className="overflow-hidden rounded-[0.72rem] border bg-card px-4 py-5 sm:px-6">
+        <div className="overflow-hidden rounded-2xl border bg-card px-4 py-5 sm:px-6">
         <ul>
           {TREE.map((row) => (
             <li

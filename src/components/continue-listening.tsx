@@ -36,7 +36,7 @@ export function ContinueListening({ scripts }: { scripts: ContinueScript[] }) {
   return (
     <Link
       href={`/scripts/${script.id}`}
-      className="group mb-8 flex items-center gap-4 rounded-2xl bg-primary p-4 text-primary-foreground shadow-md shadow-primary/20 transition-transform active:scale-[0.99] focus-ring dark:border dark:border-primary/30 dark:bg-primary/15 dark:text-foreground dark:shadow-none"
+      className="group mb-8 flex items-center gap-4 rounded-2xl bg-primary p-4 text-primary-foreground transition-transform active:scale-[0.99] focus-ring dark:border dark:border-primary/30 dark:bg-primary/15 dark:text-foreground"
     >
       <span className="min-w-0 flex-1">
         <span className="block text-xs font-medium opacity-70">

@@ -22,7 +22,7 @@ function PlayerPreview() {
   return (
     <div
       aria-hidden
-      className="w-full rounded-[0.72rem] border bg-card p-5 text-left shadow-lg shadow-foreground/5"
+      className="w-full rounded-2xl border bg-card p-5 text-left shadow-lg shadow-foreground/5"
     >
       <div className="flex items-center gap-3">
         <span className="flex h-9 items-end gap-0.5">
@@ -102,7 +102,7 @@ export function Hero() {
             </Link>
             <Link
               href="#note-to-script"
-              className="text-base underline underline-offset-4 hover:text-muted-foreground focus-ring rounded-[0.2rem]"
+              className="text-base underline underline-offset-4 hover:text-muted-foreground focus-ring rounded-sm"
             >
               See what it does to a note
             </Link>

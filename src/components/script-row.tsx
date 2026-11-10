@@ -35,9 +35,9 @@ export function ScriptRow({
             {script.title}
           </span>
           <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-            <span>{script.topic}</span>
-            <span aria-hidden>·</span>
-            <span>{formatDuration(seconds)}</span>
+            <span>
+              {script.topic}, {formatDuration(seconds)}
+            </span>
             <ScriptBadges script={script} />
           </span>
           <RowProgress scriptId={script.id} chunks={chunks} seconds={seconds} />

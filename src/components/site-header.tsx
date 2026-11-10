@@ -13,7 +13,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
         <Link
           href="/"
-          className="flex items-center gap-2.5 rounded-[0.2rem] font-heading text-lg font-semibold focus-ring"
+          className="flex items-center gap-2.5 rounded-sm font-heading text-lg font-semibold focus-ring"
         >
           <BrandMark className="size-6 shrink-0" />
           AIPOD

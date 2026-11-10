@@ -80,7 +80,7 @@ async function PlaylistContent() {
           <p className="mt-1 text-muted-foreground">
             {scripts.length === 0
               ? "Your revision scripts will appear here."
-              : `${scripts.length} ${scripts.length === 1 ? "script" : "scripts"} · about ${formatDuration(total)} in all`}
+              : `${scripts.length} ${scripts.length === 1 ? "script" : "scripts"}, about ${formatDuration(total)} in all`}
           </p>
         </div>
         {scripts.length > 0 && <PlayAllButton firstId={scripts[0].id} />}
@@ -107,10 +107,14 @@ async function PlaylistContent() {
 
 export default function ScriptsPage() {
   return (
-    <main id="main" tabIndex={-1} className="mx-auto w-full max-w-2xl px-4 pt-8 pb-16 outline-none sm:pt-12 lg:max-w-3xl">
-      <Suspense fallback={<PlaylistSkeleton />}>
-        <PlaylistContent />
-      </Suspense>
+    <main id="main" tabIndex={-1} className="mx-auto w-full max-w-5xl px-4 pt-8 pb-16 outline-none sm:pt-12">
+      {/* Left-aligned on the shell's grid, at a width you can scan, rather
+          than centred in a column of its own. */}
+      <div className="max-w-3xl">
+        <Suspense fallback={<PlaylistSkeleton />}>
+          <PlaylistContent />
+        </Suspense>
+      </div>
     </main>
   );
 }
