@@ -151,6 +151,25 @@ Radius by role, not one radius everywhere: controls 0.4rem, panels 0.72rem, the
 highlighter mark 0.2rem, and the play button a full circle because it is a
 transport control. Nothing is `rounded-2xl` by default.
 
+## Motion
+
+Motion here has one subject: the voice moving through the text.
+
+- **The highlighter** advances word by word as a script is read. That is the
+  product, and the only motion the app owes anyone.
+- **The preview on the home page** is that same thing, standing still: a level
+  meter beside the title, the mark stepping along the sentence. It loops,
+  because it is a picture of something that is still happening.
+- **The sound band** that closes the hero draws a whole script as sound —
+  phrases swelling and falling away, with a breath of quiet between them. The
+  playhead crosses it once on arrival, at the even pace of playback, and stops
+  at the halfway mark the preview beside it is paused at, so the two pictures
+  agree.
+
+Nothing else moves on its own: no section fades up on scroll (M1), no easing
+overshoots (M4), and every animation above stops under
+`prefers-reduced-motion: reduce` on the resting state it would have ended on.
+
 ## Components
 
 Shared and reused verbatim on every page: `SiteHeader`, `SiteFooter`,

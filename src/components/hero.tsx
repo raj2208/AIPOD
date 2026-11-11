@@ -1,6 +1,7 @@
 import { Pause, RotateCcw, RotateCw } from "lucide-react";
 import Link from "next/link";
 
+import { SoundBand } from "@/components/sound-band";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -82,7 +83,7 @@ function PlayerPreview() {
 export function Hero() {
   return (
     <section className="border-b">
-      <div className="mx-auto grid w-full max-w-5xl items-center gap-12 px-4 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-14">
+      <div className="mx-auto grid w-full max-w-5xl items-center gap-12 px-4 pt-16 pb-12 sm:pt-20 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-14">
         <div>
           <h1 className="max-w-[14ch] text-[clamp(2.25rem,1.4rem+4vw,4rem)] leading-[1.05] font-semibold">
             Revise your notes by listening.
@@ -111,6 +112,9 @@ export function Hero() {
 
         <PlayerPreview />
       </div>
+
+      {/* Closes the section: the sound itself, standing on the rule. */}
+      <SoundBand />
     </section>
   );
 }

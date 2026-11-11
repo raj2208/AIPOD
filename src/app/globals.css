@@ -180,7 +180,30 @@
   margin-inline: -0.14em;
 }
 
-/* Animated bars in the home page hero. */
+/* The hero's sound band: the playhead running across the waveform once, at
+   the even pace of playback, and stopping where the player beside it is
+   paused. People who asked for less motion get that resting state directly. */
+@keyframes playhead {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 50% 0 0);
+  }
+}
+
+.sound-playhead {
+  clip-path: inset(0 50% 0 0);
+  animation: playhead 4.5s linear both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sound-playhead {
+    animation: none;
+  }
+}
+
+/* Animated bars in the home page player preview. */
 @keyframes wave {
   0%,
   100% {

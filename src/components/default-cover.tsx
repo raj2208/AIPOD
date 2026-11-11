@@ -1,31 +1,11 @@
+import { generator, hashOf } from "@/lib/deterministic";
+
 /**
  * The cover drawn for a collection that brought no image of its own: a page of
  * notes with one line under the highlighter, which is the app's own mark. The
  * lines come from the collection's name, so a collection always looks the same
  * and no two look quite alike.
  */
-
-/** FNV-1a: small, stable, and the same answer on the server and the client. */
-function hashOf(text: string): number {
-  let hash = 2166136261;
-  for (let index = 0; index < text.length; index++) {
-    hash ^= text.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-/** A tiny deterministic generator, seeded by the hash. */
-function generator(seed: number) {
-  let state = seed || 1;
-  return () => {
-    state ^= state << 13;
-    state ^= state >>> 17;
-    state ^= state << 5;
-    state >>>= 0;
-    return state / 4294967296;
-  };
-}
 
 const WIDTH = 300;
 const HEIGHT = 200;
