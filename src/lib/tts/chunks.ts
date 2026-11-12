@@ -21,12 +21,25 @@ export type Chunk = {
 export const MAX_CHUNK_CHARS = 240;
 export const WORDS_PER_MINUTE = 150;
 
+/**
+ * Silence held between one paragraph and the next, at normal speed.
+ *
+ * This is revision, not a story: a point lands only if there is a moment to
+ * take it in before the next one starts. A script written one sentence to a
+ * paragraph therefore gets a beat after every sentence. The player waits for
+ * real, so the estimate below counts it as part of the listening time.
+ */
+export const PARAGRAPH_PAUSE_SECONDS = 0.7;
+
 export function countWords(text: string): number {
   return text.split(/\s+/).filter(Boolean).length;
 }
 
+/** Listening time: the words, plus the silence held between paragraphs. */
 export function estimateSeconds(text: string): number {
-  return (countWords(text) / WORDS_PER_MINUTE) * 60;
+  const speaking = (countWords(text) / WORDS_PER_MINUTE) * 60;
+  const breaks = Math.max(0, splitParagraphs(text).length - 1);
+  return speaking + breaks * PARAGRAPH_PAUSE_SECONDS;
 }
 
 /** Paragraphs are separated by blank lines. Line breaks inside one are spaces. */
@@ -104,12 +117,20 @@ export function buildChunks(
   return chunks;
 }
 
-/** Seconds of speaking before each chunk, plus the total as the last item. */
+/**
+ * Seconds of listening before each chunk, plus the total as the last item.
+ * A chunk that opens a new paragraph starts after that paragraph's pause, so
+ * the clock and the slider count the silence the player really holds.
+ */
 export function cumulativeSeconds(chunks: Chunk[]): number[] {
   const result = [0];
-  for (const chunk of chunks) {
-    result.push(result[result.length - 1] + chunk.seconds);
-  }
+  chunks.forEach((chunk, index) => {
+    const pause =
+      index > 0 && chunk.paragraph !== chunks[index - 1].paragraph
+        ? PARAGRAPH_PAUSE_SECONDS
+        : 0;
+    result.push(result[result.length - 1] + pause + chunk.seconds);
+  });
   return result;
 }
 

@@ -40,6 +40,8 @@ Covers look best at about 3:2 (1200 by 800 or larger) and must be under 2 MB. Ke
 1. Copy this folder to a new private repository (for example `aipod-notes`), and replace the sample notes with your own.
 2. Open that repo in Claude Code (or another agent) and run `/script`. It finds notes that have no script, or that changed since their script was written, and writes the scripts as drafts.
 3. Read each script. Change `status: draft` to `status: approved` once you are happy with it.
+
+   Scripts are written one sentence to a line, with a blank line between every line. That is deliberate: the player holds a short silence at every blank line, so each point lands before the next one starts. Keep the shape if you edit one by hand.
 4. Commit and push.
 5. In AIPOD, press Sync (or run `pnpm sync`). Only the files that changed are loaded.
 

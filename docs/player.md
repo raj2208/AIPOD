@@ -47,6 +47,7 @@ The web reader is built and works in desktop Chrome with the real speech engine.
 What is built:
 
 - **Sentence chunks.** Scripts are cut into sentences, and short ones are joined up to 240 characters, never across a paragraph.
+- **A pause between paragraphs.** The player holds 0.7 seconds of silence at every blank line, scaled by the speed, so a point has a moment to land before the next one starts. This is revision, not a story. Scripts are written one sentence to a paragraph (see the `/script` skill), so in practice there is a beat after every sentence. The silence counts towards the clock and the slider, and the watchdog knows not to treat it as a stall.
 - **Highlighting.** The current chunk is highlighted, and the current word too when the browser reports word positions. The mode can be off, sentence, or word. Tapping a sentence jumps to it.
 - **Controls.** The player is a bar docked to the bottom of the screen, within thumb's reach: a position slider, play and pause, back and forward 15 seconds, and a speed chip that steps through the speeds when tapped. Everything else (a speed picker from 0.75x to 3x, voice, pitch, text size, highlighting, and the switches) is in a bottom sheet. Settings are saved in the browser.
 - **Saved position.** Each script remembers where you stopped, and the scripts list offers a "Continue listening" shortcut back to the last one left part way. Positions are kept in the browser on that device.

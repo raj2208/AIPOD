@@ -3,7 +3,7 @@ name: script
 description: "Turn the user's markdown study notes into spoken scripts for AIPOD. Use when the user says 'script', 'use skill script', invokes /script, or asks to generate or refresh scripts from their notes."
 ---
 
-Rewrite study notes as scripts meant to be heard. Skill version: 1.
+Rewrite study notes as scripts meant to be heard. Skill version: 2.
 
 The one rule above all others: **change only how it reads, never what it says.** The user wrote these notes to revise from. A script that adds, drops, or reorders a fact is a bad script, however smooth it sounds.
 
@@ -19,6 +19,8 @@ The one rule above all others: **change only how it reads, never what it says.**
 2. **Write each script.** Read the note in full, then write the script file (format below) following the rules below. Do one note at a time.
 
 3. **Check before saving.** Go through the note point by point and confirm each one is in the script. Then read the script and confirm nothing is in it that is not in the note. Fix any gap.
+
+   Then check its shape: one sentence per line, a blank line between every line, and no line that stops making sense when it is heard on its own.
 
 4. **Report.** List the scripts written. Mention anything in a note that was unclear, too thin to say well, or contradictory. Do not fill gaps from your own knowledge. Then tell the user to read each script, change `status: draft` to `status: approved` when happy, commit and push, and press Sync in AIPOD.
 
@@ -46,11 +48,37 @@ Not allowed, because it changes the content:
 
 ## How it should sound
 
-- Plain spoken sentences. Short enough to say in one breath.
-- No markdown in the body: no `#`, `-`, `*`, backticks, tables, or links.
-- Separate paragraphs with a blank line. Each paragraph should be one idea, because the player moves paragraph by paragraph.
+This is revision, not a story. Someone is trying to hold facts in their head
+while a bus moves, and they cannot rewind a thought. So the script is written
+to arrive one piece at a time.
+
+**One sentence per line, with a blank line between every line.** This is the
+rule that shapes everything else. The player speaks a paragraph at a time and
+holds a silence at every blank line, so each sentence lands and is then given a
+moment to sink in. Sentences run together in one paragraph are read straight
+through, which is how you lose someone. It looks like this:
+
+```
+Start with why you need one.
+
+Pods come and go, and each new pod gets a new IP address.
+
+So nothing should ever hold onto a pod's IP.
+```
+
+The rest follows from it:
+
+- **Every line stands on its own.** After a silence, a line opening with "it", "this" or "they" has lost what it pointed at. Name the thing again, even though it reads as repetition on the page. It is not repetition when heard a second apart.
+- **One idea to a line, short enough to say in one breath.** If a line needs a comma to hold two ideas together, it is usually two lines. Aim for under 25 words. The opening line and the lines of the recap may run longer, because a list of what you will cover is one idea and breaking it up loses its shape.
+- **Carry the thread across the silence.** Open a line with the word that says how it follows: "Next,", "So,", "But", "The catch is", "That means". Without it, every line sounds like a fresh start.
+- **Let a section turn be its own line.** "Now the types." on a line of its own puts a silence on each side of it, which is how a listener hears a new heading.
+- Plain spoken sentences. No markdown in the body: no `#`, `-`, `*`, backticks, tables, or links.
 - Keep numbers as digits ("2 hours", not "two hours"). The voice reads digits correctly, and AIPOD's fact check relies on them to spot a number that was dropped or added.
 - Keep terms the user would be asked about exactly as the note spells them, so they are recognised on the day.
+
+Splitting a long sentence into short lines is a change of form, not of content,
+so it is always allowed. Rewording to make a line stand alone is allowed too,
+as long as every fact and its order survive.
 
 ## File format
 
@@ -64,10 +92,14 @@ topic: Terraform
 source: notes/terraform/basics.md
 source_hash: 56bbea268a50ac2660414091ee952fc986140e45
 model: <the model you are>
-skill_version: 1
+skill_version: 2
 status: draft
 ---
-Spoken text starts here...
+Let's revise Terraform basics.
+
+By the end of this you should be able to explain what declarative means.
+
+Start with the core idea.
 ```
 
 - `id`: the note path without `notes/` and `.md`, with slashes turned into dashes, all lowercase. It must be unique. **When rewriting a stale script, keep its existing id.** It never changes.

@@ -1,4 +1,9 @@
-import { chunkAtTime, cumulativeSeconds, type Chunk } from "./chunks";
+import {
+  chunkAtTime,
+  cumulativeSeconds,
+  PARAGRAPH_PAUSE_SECONDS,
+  type Chunk,
+} from "./chunks";
 
 /**
  * Speaks a list of chunks one after another with the browser's speech engine.
@@ -10,6 +15,8 @@ import { chunkAtTime, cumulativeSeconds, type Chunk } from "./chunks";
  *   is unreliable on Android Chrome, so resuming simply restarts the chunk.
  * - Every utterance gets a generation number. Events from an utterance that was
  *   cancelled are ignored, because browsers report a cancel as an error or end.
+ * - Between paragraphs it holds a short silence, so a point has a moment to
+ *   land before the next one starts. The watchdog knows to leave that alone.
  * - A watchdog restarts speech that stopped without us asking it to.
  */
 
@@ -91,6 +98,8 @@ export class SpeechEngine {
   };
   private generation = 0;
   private watchdog: ReturnType<typeof setInterval> | null = null;
+  /** Pending silence between two paragraphs, if we are inside one. */
+  private breath: ReturnType<typeof setTimeout> | null = null;
   private startedAt = 0;
   private restarts = 0;
 
@@ -169,12 +178,14 @@ export class SpeechEngine {
   pause() {
     if (this.state.status !== "playing") return;
     this.generation++;
+    this.clearBreath();
     this.deps.getSynth()?.cancel();
     this.set({ status: "paused" });
   }
 
   stop() {
     this.generation++;
+    this.clearBreath();
     this.deps.getSynth()?.cancel();
     if (this.state !== IDLE_STATE) {
       this.set({ ...IDLE_STATE, finished: this.state.finished });
@@ -244,7 +255,15 @@ export class SpeechEngine {
     return this.deps.now ? this.deps.now() : Date.now();
   }
 
+  /** Drops a pending between-paragraph silence. */
+  private clearBreath() {
+    if (!this.breath) return;
+    clearTimeout(this.breath);
+    this.breath = null;
+  }
+
   private speak(index: number) {
+    this.clearBreath();
     const synth = this.deps.getSynth();
     const chunk = this.chunks[index];
     if (!synth || !chunk) return;
@@ -273,8 +292,24 @@ export class SpeechEngine {
 
     utterance.onend = () => {
       if (generation !== this.generation) return;
-      if (index + 1 < this.chunks.length) this.speak(index + 1);
-      else this.finish();
+      const next = this.chunks[index + 1];
+      if (!next) {
+        this.finish();
+        return;
+      }
+      // A new paragraph is a new point, so leave a moment before it. At a
+      // faster speed the whole thing moves faster, silence included.
+      if (next.paragraph === chunk.paragraph) {
+        this.speak(index + 1);
+        return;
+      }
+      this.breath = setTimeout(
+        () => {
+          this.breath = null;
+          if (generation === this.generation) this.speak(index + 1);
+        },
+        (PARAGRAPH_PAUSE_SECONDS * 1000) / this.settings.rate,
+      );
     };
 
     utterance.onerror = (event) => {
@@ -316,6 +351,8 @@ export class SpeechEngine {
   /** Recovers when the engine stops on its own, which browsers sometimes do. */
   private checkHealth() {
     if (this.state.status !== "playing" || this.state.index === null) return;
+    // Silence we are holding on purpose is not the engine having stalled.
+    if (this.breath) return;
     const synth = this.deps.getSynth();
     if (!synth) return;
 
